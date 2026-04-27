@@ -1,0 +1,20 @@
+Table users {
+  id UUID [pk]
+  email varchar
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_secrets {
+  user_id UUID [pk, ref: - users.id]
+  password_hash varchar
+}
+
+Table refresh_tokens {
+  id UUID [pk]
+  user_id UUID [ref: > users.id]
+  token varchar
+  expires_at timestamp
+  is_revoked boolean [default: false]
+}
