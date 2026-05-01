@@ -1,8 +1,20 @@
 from fastapi import FastAPI
+from fastapi.routing import APIRouter
 
-app = FastAPI()
+from api.main import Router
 
 
-@app.get("/")
-def ping():
-    return {"message": "Service is alive"}
+def initialize():
+    print("Initializing the service...")
+
+    app = FastAPI()
+    router = APIRouter()
+
+    Router(router)
+
+    app.include_router(router)
+
+    return app
+
+
+app = initialize()
