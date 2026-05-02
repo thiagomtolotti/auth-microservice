@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.api import DefaultRouter, UsersRouter
+from app.repositories.users import InMemoryUsersRepository
 from app.services.users import UsersService
 
 
@@ -9,7 +10,8 @@ def initialize():
 
     app = FastAPI()
 
-    users_service = UsersService()
+    users_repo = InMemoryUsersRepository()
+    users_service = UsersService(users_repo)
 
     default_router = DefaultRouter()
     users_router = UsersRouter(users_service)
