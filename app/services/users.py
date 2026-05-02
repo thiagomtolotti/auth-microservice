@@ -1,4 +1,5 @@
-from app.repositories.users import UsersRepository
+from app.domain.vos import Password
+from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
 from app.types import CreateUserHandlerDTO
 
 
@@ -7,5 +8,9 @@ class UsersService:
         self.repository = repository
 
     def create(self, data: CreateUserHandlerDTO):
-        print("Creating User")
-        self.repository.create()
+        dto = CreateUserRepositoryDTO(
+            email=data.email,
+            password=Password(data.password),
+        )
+
+        self.repository.create(dto)
