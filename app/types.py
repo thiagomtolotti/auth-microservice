@@ -26,8 +26,10 @@ class LoginHandlerDTO(BaseModel):
 @dataclass
 class LoginServiceResponseDTO:
     access_token: str
+    refresh_token: str
 
 
 class LoginHandlerResponseDTO(BaseModel):
     message: str = "Login successful"
     access_token: str
+    refresh_token: str

@@ -21,5 +21,6 @@ class UsersRouter:
         self.service.login(data)
 
         return LoginHandlerResponseDTO(
-            access_token=self.service.login(data).access_token
+            access_token=self.service.login(data).access_token,
+            refresh_token=self.service.login(data).refresh_token,
         )

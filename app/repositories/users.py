@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
 from pydantic.networks import EmailStr
 
@@ -15,10 +16,15 @@ class UsersRepository(ABC):
     def find_by_email(self, email: str) -> UserModel | None:
         pass
 
+    @abstractmethod
+    def create_refresh_token(self, user_id: UUID, refresh_token: str):
+        pass
+
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
         self.users: list[UserModel] = []
+        self.refresh_tokens: dict[str, str] = {}
 
     def create(self, data: CreateUserRepositoryDTO):
         user = UserModel(
@@ -36,3 +42,8 @@ class InMemoryUsersRepository(UsersRepository):
                 return user
 
         return None
+
+    def create_refresh_token(self, user_id: UUID, refresh_token: str):
+        self.refresh_tokens[str(user_id)] = refresh_token
+
+        print(f"Refresh token created for user_id: {user_id}")

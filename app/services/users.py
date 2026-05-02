@@ -33,5 +33,10 @@ class UsersService:
             raise LoginFailedException("Invalid email or password")
 
         access_token = user.generate_access_token()
+        refresh_token = user.generate_refresh_token()
 
-        return LoginServiceResponseDTO(access_token=access_token)
+        self.repository.create_refresh_token(user.id, refresh_token)
+
+        return LoginServiceResponseDTO(
+            access_token=access_token, refresh_token=refresh_token
+        )
