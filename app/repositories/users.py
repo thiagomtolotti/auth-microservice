@@ -21,7 +21,7 @@ class InMemoryUsersRepository(UsersRepository):
         self.users: list[InMemoryUser] = []
 
     def create(self, data: CreateUserRepositoryDTO):
-        user = InMemoryUser(email=data.email, password=data.password.value)
+        user = InMemoryUser(email=data.email, password=data.password.hashed)
 
         self.users.append(user)
 

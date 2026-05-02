@@ -1,3 +1,4 @@
+from argon2 import PasswordHasher
 import re
 
 from app.domain.exceptions import InvalidPasswordException
@@ -5,20 +6,29 @@ from app.domain.exceptions import InvalidPasswordException
 
 PASSWORD_REGEX = r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};\':"\\|,.<>/?]).+$'
 
+ph = PasswordHasher()
+
 
 class Password:
     def __init__(self, password: str):
-        if not password:
+
+        self.value = password
+        self._validate()
+        self.hashed = self._hash()
+
+    def _validate(self):
+        if not self.value:
             raise InvalidPasswordException("Password cannot be empty")
 
-        if len(password) < 8:
+        if len(self.value) < 8:
             raise InvalidPasswordException(
                 "Password must be at least 8 characters long"
             )
 
-        if not re.match(PASSWORD_REGEX, password):
+        if not re.match(PASSWORD_REGEX, self.value):
             raise InvalidPasswordException(
                 "Password must contain at least one letter, one number, and one special character"
             )
 
-        self.value = password
+    def _hash(self):
+        return ph.hash(self.value)
