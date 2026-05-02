@@ -21,3 +21,13 @@ class CreateUserRepositoryDTO:
 class LoginHandlerDTO(BaseModel):
     email: EmailStr
     password: str = Field(min_length=8)
+
+
+@dataclass
+class LoginServiceResponseDTO:
+    access_token: str
+
+
+class LoginHandlerResponseDTO(BaseModel):
+    message: str = "Login successful"
+    access_token: str

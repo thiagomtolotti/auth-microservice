@@ -1,15 +1,9 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass
 
 from pydantic.networks import EmailStr
 
-from app.types import CreateUserRepositoryDTO, Password
-
-
-@dataclass
-class UserModel:
-    email: EmailStr
-    password: Password
+from app.domain.models.user import UserModel
+from app.types import CreateUserRepositoryDTO
 
 
 class UsersRepository(ABC):

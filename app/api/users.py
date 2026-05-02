@@ -1,7 +1,7 @@
 from fastapi.routing import APIRouter
 
 from app.services.users import UsersService
-from app.types import CreateUserHandlerDTO, LoginHandlerDTO
+from app.types import CreateUserHandlerDTO, LoginHandlerDTO, LoginHandlerResponseDTO
 
 
 class UsersRouter:
@@ -17,7 +17,9 @@ class UsersRouter:
 
         return {"message": "User created successfully"}
 
-    def login(self, data: LoginHandlerDTO):
+    def login(self, data: LoginHandlerDTO) -> LoginHandlerResponseDTO:
         self.service.login(data)
 
-        return {"message": "Login successful"}
+        return LoginHandlerResponseDTO(
+            access_token=self.service.login(data).access_token
+        )

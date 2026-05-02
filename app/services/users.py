@@ -1,7 +1,9 @@
-from app.domain.exceptions import LoginFailedException, UserAlreadyExistsException
 from app.domain.vos import Password
+
+from app.types import CreateUserHandlerDTO, LoginHandlerDTO, LoginServiceResponseDTO
+from app.domain.exceptions import LoginFailedException, UserAlreadyExistsException
+
 from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
-from app.types import CreateUserHandlerDTO, LoginHandlerDTO
 
 
 class UsersService:
@@ -21,7 +23,7 @@ class UsersService:
 
         self.repository.create(dto)
 
-    def login(self, data: LoginHandlerDTO):
+    def login(self, data: LoginHandlerDTO) -> LoginServiceResponseDTO:
         user = self.repository.find_by_email(data.email)
 
         if not user:
@@ -29,3 +31,7 @@ class UsersService:
 
         if not user.password.verify(data.password):
             raise LoginFailedException("Invalid email or password")
+
+        access_token = user.generate_access_token()
+
+        return LoginServiceResponseDTO(access_token=access_token)
