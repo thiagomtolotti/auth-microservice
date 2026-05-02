@@ -16,3 +16,8 @@ class CreateUserHandlerDTO(BaseModel):
 class CreateUserRepositoryDTO:
     email: EmailStr
     password: Password
+
+
+class LoginHandlerDTO(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8)

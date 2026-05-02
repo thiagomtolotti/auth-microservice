@@ -32,3 +32,9 @@ class Password:
 
     def _hash(self):
         return ph.hash(self.value)
+
+    def verify(self, password: str) -> bool:
+        try:
+            return ph.verify(self.hashed, password)
+        except Exception:
+            return False

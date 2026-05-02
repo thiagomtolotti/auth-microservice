@@ -1,8 +1,15 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
-from pydantic.main import BaseModel
+from pydantic.networks import EmailStr
 
-from app.types import CreateUserRepositoryDTO
+from app.types import CreateUserRepositoryDTO, Password
+
+
+@dataclass
+class UserModel:
+    email: EmailStr
+    password: Password
 
 
 class UsersRepository(ABC):
@@ -10,19 +17,28 @@ class UsersRepository(ABC):
     def create(self, data: CreateUserRepositoryDTO):
         pass
 
-
-class InMemoryUser(BaseModel):
-    email: str
-    password: str
+    @abstractmethod
+    def find_by_email(self, email: str) -> UserModel | None:
+        pass
 
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
-        self.users: list[InMemoryUser] = []
+        self.users: list[UserModel] = []
 
     def create(self, data: CreateUserRepositoryDTO):
-        user = InMemoryUser(email=data.email, password=data.password.hashed)
+        user = UserModel(
+            email=data.email,
+            password=data.password,
+        )
 
         self.users.append(user)
 
         print(f"User created: {user.email}")
+
+    def find_by_email(self, email: EmailStr):
+        for user in self.users:
+            if user.email == email:
+                return user
+
+        return None
