@@ -1,4 +1,4 @@
-from app.domain.exceptions import LoginFailedException
+from app.domain.exceptions import LoginFailedException, UserAlreadyExistsException
 from app.domain.vos import Password
 from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
 from app.types import CreateUserHandlerDTO, LoginHandlerDTO
@@ -9,6 +9,11 @@ class UsersService:
         self.repository = repository
 
     def create(self, data: CreateUserHandlerDTO):
+        exists = bool(self.repository.find_by_email(data.email))
+
+        if exists:
+            raise UserAlreadyExistsException("User already exists")
+
         dto = CreateUserRepositoryDTO(
             email=data.email,
             password=Password(data.password),

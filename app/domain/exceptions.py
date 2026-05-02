@@ -14,3 +14,9 @@ class LoginFailedException(DomainException):
     """Exception raised when login fails."""
 
     pass
+
+
+class UserAlreadyExistsException(DomainException):
+    """Exception raised when trying to create a user that already exists."""
+
+    pass
