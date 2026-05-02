@@ -1,8 +1,20 @@
-from uuid import uuid4
+from dataclasses import dataclass
+import datetime
+from uuid import UUID, uuid4
+import jwt
 
 from pydantic.networks import EmailStr
 
 from app.domain.vos import Password
+
+
+@dataclass
+class LoginResponseData:
+    access_token: str
+    refresh_token: str
+    created_at: int
+    expires_at: int
+    jti: str
 
 
 class UserModel:
@@ -11,8 +23,49 @@ class UserModel:
         self.email = email
         self.password = password
 
-    def generate_access_token(self) -> str:
-        return f"token-for-{self.email}"
+    def login(self) -> LoginResponseData:
+        jti = uuid4()
 
-    def generate_refresh_token(self) -> str:
-        return f"refresh-token-for-{self.email}"
+        now = datetime.datetime.now(datetime.timezone.utc)
+        session_duration = datetime.timedelta(days=7)
+
+        refresh_expires = now + session_duration
+
+        access_token = self._generate_access_token()
+        refresh_token = self._generate_refresh_token(jti, now, refresh_expires)
+
+        return LoginResponseData(
+            access_token=access_token,
+            refresh_token=refresh_token,
+            created_at=int(now.timestamp()),
+            expires_at=int(refresh_expires.timestamp()),
+            jti=str(jti),
+        )
+
+    def _generate_access_token(self) -> str:
+        now = datetime.datetime.now()
+        duration = datetime.timedelta(minutes=15)
+
+        expiration_date = now + duration
+
+        payload: dict[str, str | datetime.datetime] = {
+            "sub": str(self.id),
+            "exp": expiration_date,
+            "iat": now,  # Issued At Time
+            "type": "access",
+        }
+
+        return str(jwt.encode(payload, "secret", algorithm="HS256"))
+
+    def _generate_refresh_token(
+        self, jti: UUID, now: datetime.datetime, exp: datetime.datetime
+    ) -> str:
+        payload: dict[str, str | datetime.datetime] = {
+            "sub": str(self.id),
+            "exp": exp,
+            "iat": now,  # Issued At Time
+            "jti": str(jti),  # Unique identifier for the token
+            "type": "refresh",
+        }
+
+        return str(jwt.encode(payload, "secret", algorithm="HS256"))

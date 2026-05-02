@@ -32,11 +32,15 @@ class UsersService:
         if not user.password.verify(data.password):
             raise LoginFailedException("Invalid email or password")
 
-        access_token = user.generate_access_token()
-        refresh_token = user.generate_refresh_token()
+        login_data = user.login()
 
-        self.repository.create_refresh_token(user.id, refresh_token)
+        self.repository.save_refresh_token(
+            user.id,
+            login_data.created_at,
+            login_data.expires_at,
+            login_data.jti,
+        )
 
         return LoginServiceResponseDTO(
-            access_token=access_token, refresh_token=refresh_token
+            access_token=login_data.access_token, refresh_token=login_data.refresh_token
         )

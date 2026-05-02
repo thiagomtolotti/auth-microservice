@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from uuid import UUID
 
 from pydantic.networks import EmailStr
@@ -17,14 +18,24 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
-    def create_refresh_token(self, user_id: UUID, refresh_token: str):
+    def save_refresh_token(
+        self, user_id: UUID, created_at: int, expires_at: int, jti: str
+    ):
         pass
+
+
+@dataclass
+class RefreshTokenData:
+    user_id: UUID
+    created_at: int
+    expires_at: int
+    jti: str
 
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
         self.users: list[UserModel] = []
-        self.refresh_tokens: dict[str, str] = {}
+        self.refresh_tokens: dict[str, RefreshTokenData] = {}
 
     def create(self, data: CreateUserRepositoryDTO):
         user = UserModel(
@@ -43,7 +54,14 @@ class InMemoryUsersRepository(UsersRepository):
 
         return None
 
-    def create_refresh_token(self, user_id: UUID, refresh_token: str):
-        self.refresh_tokens[str(user_id)] = refresh_token
+    def save_refresh_token(
+        self, user_id: UUID, created_at: int, expires_at: int, jti: str
+    ):
+        self.refresh_tokens[str(user_id)] = RefreshTokenData(
+            user_id=user_id,
+            created_at=created_at,
+            expires_at=expires_at,
+            jti=jti,
+        )
 
         print(f"Refresh token created for user_id: {user_id}")
