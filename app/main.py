@@ -6,6 +6,7 @@ from app.api import DefaultRouter, UsersRouter
 from app.domain.exceptions import DomainException
 from app.repositories.users import InMemoryUsersRepository
 from app.services.users import UsersService
+from app.utils import setup_environment
 
 
 def setup_exception_handlers(app: FastAPI):
@@ -58,6 +59,8 @@ def setup_exception_handlers(app: FastAPI):
 
 def initialize():
     print("Initializing the service...")
+
+    setup_environment()
 
     app = FastAPI()
 
