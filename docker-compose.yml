@@ -15,3 +15,11 @@ services:
       target: testing
     volumes:
       - .:/app
+
+  coverage:
+    image: coverage
+    build:
+      context: .
+      target: coverage
+    volumes:
+      - .:/app

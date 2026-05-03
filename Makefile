@@ -11,3 +11,6 @@ generate-certs:
 
 tests: 
 	sudo docker-compose run --build --rm tests
+
+coverage:
+	sudo docker-compose run --build --rm coverage

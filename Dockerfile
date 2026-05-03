@@ -17,6 +17,13 @@ RUN pip install pytest-watch
 
 CMD ["pytest-watch"]
 
-# Stage 3: Production
+# Stage 3: Development
 FROM base AS development
 CMD ["fastapi", "dev", "--host", "0.0.0.0"]
+
+# Stage 4: Coverage
+FROM testing AS coverage
+
+RUN pip install pytest pytest-cov
+
+CMD ["pytest", "--cov=app", "--cov-report=html"]
