@@ -1,7 +1,7 @@
 info:
   name: Login
   type: http
-  seq: 3
+  seq: 4
 
 http:
   method: POST
@@ -14,6 +14,23 @@ http:
         "password": "@aa12345678"
       }
   auth: inherit
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        // Ensure the request was successful before saving
+        if (res.getStatus() === 200) {
+          const data = res.getBody();
+          
+          if (data.access_token) {
+            // Set the variable at the collection level
+            bru.setVar("access_token", data.access_token);
+            console.log("Access token saved to collection!");
+          } else {
+            console.error("No access_token found in response body");
+          }
+        }
 
 settings:
   encodeUrl: true

@@ -1,6 +1,9 @@
 from fastapi.params import Header
 from fastapi.routing import APIRouter
+from starlette.responses import JSONResponse
 from typing_extensions import Annotated
+
+from app.domain.models.tokens.main import Token
 
 
 class DefaultRouter:
@@ -16,6 +19,14 @@ class DefaultRouter:
     def protected_route(self, authorization: Annotated[str | None, Header()] = None):
         token = authorization.split(" ")[1] if authorization else None
 
-        print(f"Received token: {token}")
+        if not token:
+            return JSONResponse(
+                status_code=401, content={"message": "Authorization header missing"}
+            )
+
+        try:
+            Token.decode(token)
+        except Exception:
+            return JSONResponse(status_code=401, content={"message": "Invalid token"})
 
         return {"message": "This is a protected route"}
