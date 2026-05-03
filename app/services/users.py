@@ -1,6 +1,10 @@
 from app.domain.vos import Password
 
-from app.types import CreateUserHandlerDTO, LoginHandlerDTO, LoginServiceResponseDTO
+from app.utils.types import (
+    CreateUserHandlerDTO,
+    LoginHandlerDTO,
+    LoginServiceResponseDTO,
+)
 from app.domain.exceptions import LoginFailedException, UserAlreadyExistsException
 
 from app.repositories.users import CreateUserRepositoryDTO, UsersRepository

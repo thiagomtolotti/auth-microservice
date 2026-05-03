@@ -5,7 +5,7 @@ from uuid import UUID
 from pydantic.networks import EmailStr
 
 from app.domain.models.user import UserModel
-from app.types import CreateUserRepositoryDTO
+from app.utils.types import CreateUserRepositoryDTO
 
 
 class UsersRepository(ABC):

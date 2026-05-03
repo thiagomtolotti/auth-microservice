@@ -1,7 +1,11 @@
 from fastapi.routing import APIRouter
 
 from app.services.users import UsersService
-from app.types import CreateUserHandlerDTO, LoginHandlerDTO, LoginHandlerResponseDTO
+from app.utils.types import (
+    CreateUserHandlerDTO,
+    LoginHandlerDTO,
+    LoginHandlerResponseDTO,
+)
 
 
 class UsersRouter:
