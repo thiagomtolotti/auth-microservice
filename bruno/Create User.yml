@@ -1,0 +1,167 @@
+info:
+  name: Create User
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{api_url}}/users"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "thiagotolotti@gmail.com",
+        "password": "@aa12345678"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Request Validation Error
+    request:
+      url: "{{api_url}}/users"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": ""
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:41:26 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "349"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "status": "error",
+            "code": 422,
+            "message": "Validation Failed",
+            "errors": [
+              {
+                "field": "body - email",
+                "message": "Value is not a valid email address: an email address must have an @-sign.",
+                "type": "value_error",
+                "input_provided": ""
+              },
+              {
+                "field": "body - password",
+                "message": "String should have at least 8 characters",
+                "type": "string_too_short",
+                "input_provided": ""
+              }
+            ]
+          }
+  - name: InvalidPasswordException
+    request:
+      url: "{{api_url}}/users"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com",
+            "password": "aa12345678"
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:49:10 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "251"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "status": "error",
+            "code": 422,
+            "message": "Validation Failed",
+            "errors": [
+              {
+                "field": "body - password",
+                "message": "Password must contain at least one letter, one number, and one special character",
+                "type": "value_error.password_invalid",
+                "input_provided": null
+              }
+            ]
+          }
+  - name: Success
+    request:
+      url: "{{api_url}}/users"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com",
+            "password": "@aa12345678"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:49:46 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "39"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User created successfully"
+          }
+  - name: UserAlreadyExistsException
+    request:
+      url: "{{api_url}}/users"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com",
+            "password": "@aa12345678"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:50:29 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "68"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "type": "UserAlreadyExistsException",
+            "detail": "User already exists"
+          }

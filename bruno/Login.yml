@@ -1,0 +1,130 @@
+info:
+  name: Login
+  type: http
+  seq: 3
+
+http:
+  method: POST
+  url: "{{api_url}}/users/login"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "thiagotolotti@gmail.com",
+        "password": "@aa12345678"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: RequestValidationError
+    request:
+      url: "{{api_url}}/users/login"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "",
+            "password": ""
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:52:35 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "349"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "status": "error",
+            "code": 422,
+            "message": "Validation Failed",
+            "errors": [
+              {
+                "field": "body - email",
+                "message": "Value is not a valid email address: an email address must have an @-sign.",
+                "type": "value_error",
+                "input_provided": ""
+              },
+              {
+                "field": "body - password",
+                "message": "String should have at least 8 characters",
+                "type": "string_too_short",
+                "input_provided": ""
+              }
+            ]
+          }
+  - name: LoginFailedException
+    request:
+      url: "{{api_url}}/users/login"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com",
+            "password": "@aa123456"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:58:34 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "68"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "type": "LoginFailedException",
+            "detail": "Invalid email or password"
+          }
+  - name: Success
+    request:
+      url: "{{api_url}}/users/login"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com",
+            "password": "@aa12345678"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 02:59:06 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "547"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Login successful",
+            "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMGQ4ZTc4Zi1hMzk2LTQyYjctYjdmMS01Y2M5N2RiYWUwNTYiLCJleHAiOjE3Nzc3NzgwNDcsImlhdCI6MTc3Nzc3NzE0NywidHlwZSI6ImFjY2VzcyJ9.iE-h_NfLYq9gk-_9qMICCo-9wmJZ_H6FU8UqH1KMFk8",
+            "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMGQ4ZTc4Zi1hMzk2LTQyYjctYjdmMS01Y2M5N2RiYWUwNTYiLCJleHAiOjE3NzgzODE5NDcsImlhdCI6MTc3Nzc3NzE0NywianRpIjoiMWQ4MTBhNGQtMDNmOS00NTgzLTlmZDktZGM4MjE0ZGVjMzY5IiwidHlwZSI6InJlZnJlc2gifQ.uwdQLFo0FffBNfwTXg5SPSNXaH446_aenIx2d0t1lbE"
+          }
