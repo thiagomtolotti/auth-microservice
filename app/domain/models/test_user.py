@@ -1,4 +1,4 @@
-from app.domain.vos import Password
+from app.domain.vos.password import Password
 
 from app.domain.models.user import UserModel
 
