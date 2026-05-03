@@ -1,9 +1,9 @@
 import datetime
 
+from app.utils.types import CreateUserHandlerDTO, LoginHandlerDTO
 from app.domain.models.tokens.main import CreateTokenPayload, RefreshToken
 from app.repositories.users import InMemoryUsersRepository
 from app.services.users import UsersService
-from app.utils.types import CreateUserHandlerDTO, LoginHandlerDTO
 
 import pytest
 
