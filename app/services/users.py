@@ -74,7 +74,4 @@ class UsersService:
 
         access_token = user.refresh_access_token()
 
-        if not access_token:
-            raise LoginFailedException("Invalid refresh token")
-
         return access_token
