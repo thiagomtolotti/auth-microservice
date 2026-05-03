@@ -1,0 +1,109 @@
+info:
+  name: Logout
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{api_url}}/users/logout"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "thiagotolotti@gmail.com"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: LogoutFailedException
+    request:
+      url: "{{api_url}}/users/logout"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 15:33:16 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "65"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "type": "LogoutFailedException",
+            "detail": "Invalid email address"
+          }
+  - name: Success
+    request:
+      url: "{{api_url}}/users/logout"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 15:33:44 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "42"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User logged out successfully"
+          }
+  - name: LogoutFailedException - No existing session
+    request:
+      url: "{{api_url}}/users/logout"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "thiagotolotti@gmail.com"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 15:35:20 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "66"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "type": "LogoutFailedException",
+            "detail": "Failed to log out user"
+          }

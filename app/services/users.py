@@ -1,3 +1,5 @@
+from pydantic.networks import EmailStr
+
 from app.domain.vos import Password
 
 from app.utils.types import (
@@ -5,7 +7,11 @@ from app.utils.types import (
     LoginHandlerDTO,
     LoginServiceResponseDTO,
 )
-from app.domain.exceptions import LoginFailedException, UserAlreadyExistsException
+from app.domain.exceptions import (
+    LoginFailedException,
+    LogoutFailedException,
+    UserAlreadyExistsException,
+)
 
 from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
 
@@ -48,3 +54,14 @@ class UsersService:
         return LoginServiceResponseDTO(
             access_token=login_data.access_token, refresh_token=login_data.refresh_token
         )
+
+    def logout(self, email: EmailStr):
+        user = self.repository.find_by_email(email)
+
+        if not user:
+            raise LogoutFailedException("Invalid email address")
+
+        success = self.repository.delete_all_refresh_tokens(user.id)
+
+        if not success:
+            raise LogoutFailedException("Failed to log out user")

@@ -23,6 +23,11 @@ class UsersRepository(ABC):
     ):
         pass
 
+    @abstractmethod
+    def delete_all_refresh_tokens(self, user_id: UUID) -> bool:
+        """Deletes all refresh tokens for a given user. Returns True if any tokens were deleted, False otherwise."""
+        pass
+
 
 @dataclass
 class RefreshTokenData:
@@ -45,7 +50,7 @@ class InMemoryUsersRepository(UsersRepository):
 
         self.users.append(user)
 
-        print(f"User created: {user.email}")
+        print(f"User created: {user.email}, id: {user.id}")
 
     def find_by_email(self, email: EmailStr):
         for user in self.users:
@@ -68,3 +73,15 @@ class InMemoryUsersRepository(UsersRepository):
 
         print(f"Refresh token created for user_id: {user_id}")
         print(f"Current refresh tokens: {len(self.refresh_tokens)}")
+
+    def delete_all_refresh_tokens(self, user_id: UUID) -> bool:
+        prev_count = len(self.refresh_tokens)
+
+        self.refresh_tokens = [
+            token for token in self.refresh_tokens if token.user_id != user_id
+        ]
+
+        after_count = len(self.refresh_tokens)
+
+        print(f"Current refresh tokens: {len(self.refresh_tokens)}")
+        return prev_count > after_count

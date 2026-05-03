@@ -33,3 +33,7 @@ class LoginHandlerResponseDTO(BaseModel):
     message: str = "Login successful"
     access_token: str
     refresh_token: str
+
+
+class LogoutHandlerDTO(BaseModel):
+    email: EmailStr

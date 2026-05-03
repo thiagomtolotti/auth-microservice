@@ -13,3 +13,27 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+examples:
+  - name: Success
+    request:
+      url: "{{api_url}}/protected"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 15:33:30 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "39"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "This is a protected route"
+          }

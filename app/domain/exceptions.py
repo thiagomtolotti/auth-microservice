@@ -28,6 +28,12 @@ class LoginFailedException(DomainException):
     pass
 
 
+class LogoutFailedException(DomainException):
+    """Exception raised when logout fails."""
+
+    pass
+
+
 class UserAlreadyExistsException(DomainException):
     """Exception raised when trying to create a user that already exists."""
 

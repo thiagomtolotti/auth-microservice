@@ -5,6 +5,7 @@ from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginHandlerResponseDTO,
+    LogoutHandlerDTO,
 )
 
 
@@ -15,6 +16,7 @@ class UsersRouter:
 
         self.router.add_api_route("/", self.create_user, methods=["POST"])
         self.router.add_api_route("/login", self.login, methods=["POST"])
+        self.router.add_api_route("/logout", self.logout, methods=["POST"])
 
     def create_user(self, data: CreateUserHandlerDTO):
         self.service.create(data)
@@ -28,3 +30,8 @@ class UsersRouter:
             access_token=res.access_token,
             refresh_token=res.refresh_token,
         )
+
+    def logout(self, data: LogoutHandlerDTO):
+        self.service.logout(data.email)
+
+        return {"message": "User logged out successfully"}
