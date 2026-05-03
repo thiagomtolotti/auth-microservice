@@ -41,7 +41,7 @@ class UsersService:
         self.repository.save_refresh_token(
             user.id,
             login_data.created_at,
-            login_data.expires_at,
+            login_data.refresh_expires_at,
             login_data.jti,
         )
 

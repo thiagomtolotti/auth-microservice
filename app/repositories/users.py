@@ -35,7 +35,7 @@ class RefreshTokenData:
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
         self.users: list[UserModel] = []
-        self.refresh_tokens: dict[str, RefreshTokenData] = {}
+        self.refresh_tokens: list[RefreshTokenData] = []
 
     def create(self, data: CreateUserRepositoryDTO):
         user = UserModel(
@@ -57,11 +57,14 @@ class InMemoryUsersRepository(UsersRepository):
     def save_refresh_token(
         self, user_id: UUID, created_at: int, expires_at: int, jti: str
     ):
-        self.refresh_tokens[str(user_id)] = RefreshTokenData(
-            user_id=user_id,
-            created_at=created_at,
-            expires_at=expires_at,
-            jti=jti,
+        self.refresh_tokens.append(
+            RefreshTokenData(
+                user_id=user_id,
+                created_at=created_at,
+                expires_at=expires_at,
+                jti=jti,
+            )
         )
 
         print(f"Refresh token created for user_id: {user_id}")
+        print(f"Current refresh tokens: {len(self.refresh_tokens)}")

@@ -13,7 +13,7 @@ class LoginResponseData:
     access_token: str
     refresh_token: str
     created_at: int
-    expires_at: int
+    refresh_expires_at: int
     jti: str
 
 
@@ -43,6 +43,6 @@ class UserModel:
             access_token=access_token,
             refresh_token=refresh_token_str,
             created_at=int(now.timestamp()),
-            expires_at=int(refresh_expires.timestamp()),
+            refresh_expires_at=int(refresh_expires.timestamp()),
             jti=str(refresh_token.jti),
         )
