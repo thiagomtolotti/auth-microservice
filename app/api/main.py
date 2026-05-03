@@ -1,4 +1,6 @@
+from fastapi.params import Header
 from fastapi.routing import APIRouter
+from typing_extensions import Annotated
 
 
 class DefaultRouter:
@@ -6,6 +8,14 @@ class DefaultRouter:
         self.router = APIRouter()
 
         self.router.add_api_route("/", self.ping, methods=["GET"])
+        self.router.add_api_route("/protected", self.protected_route, methods=["GET"])
 
     def ping(self):
         return {"message": "Service is alive"}
+
+    def protected_route(self, authorization: Annotated[str | None, Header()] = None):
+        token = authorization.split(" ")[1] if authorization else None
+
+        print(f"Received token: {token}")
+
+        return {"message": "This is a protected route"}
