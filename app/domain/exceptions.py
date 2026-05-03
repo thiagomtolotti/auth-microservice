@@ -1,13 +1,25 @@
+from typing import Any
+
+from fastapi.exceptions import RequestValidationError
+
+
 class DomainException(Exception):
     """Base class for domain exceptions."""
 
     pass
 
 
-class InvalidPasswordException(DomainException):
-    """Exception raised for invalid passwords."""
-
-    pass
+class InvalidPasswordException(RequestValidationError):
+    def __init__(self, message: str = "Invalid password"):
+        # We manually construct the error list to match Pydantic's expected shape
+        errors: list[dict[str, Any]] = [
+            {
+                "loc": ("body", "password"),
+                "msg": message,
+                "type": "value_error.password_invalid",
+            }
+        ]
+        super().__init__(errors)
 
 
 class LoginFailedException(DomainException):
