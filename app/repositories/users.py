@@ -6,6 +6,7 @@ from pydantic.networks import EmailStr
 
 from app.domain.models.user import UserModel
 from app.utils.types import CreateUserRepositoryDTO
+from app.domain.models.tokens.main import Token
 
 
 class UsersRepository(ABC):
@@ -26,6 +27,10 @@ class UsersRepository(ABC):
     @abstractmethod
     def delete_all_refresh_tokens(self, user_id: UUID) -> bool:
         """Deletes all refresh tokens for a given user. Returns True if any tokens were deleted, False otherwise."""
+        pass
+
+    @abstractmethod
+    def find_by_refresh_token(self, refresh_token: str) -> UserModel | None:
         pass
 
 
@@ -85,3 +90,14 @@ class InMemoryUsersRepository(UsersRepository):
 
         print(f"Current refresh tokens: {len(self.refresh_tokens)}")
         return prev_count > after_count
+
+    def find_by_refresh_token(self, refresh_token: str) -> UserModel | None:
+        token_data = Token.decode(refresh_token)
+
+        for token in self.refresh_tokens:
+            if token.jti == token_data.jti:
+                for user in self.users:
+                    if user.id == token.user_id:
+                        return user
+
+        return None

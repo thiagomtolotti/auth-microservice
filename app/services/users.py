@@ -65,3 +65,16 @@ class UsersService:
 
         if not success:
             raise LogoutFailedException("Failed to log out user")
+
+    def refresh_token(self, refresh_token: str) -> str:
+        user = self.repository.find_by_refresh_token(refresh_token)
+
+        if not user:
+            raise LoginFailedException("Invalid refresh token")
+
+        access_token = user.refresh_access_token()
+
+        if not access_token:
+            raise LoginFailedException("Invalid refresh token")
+
+        return access_token

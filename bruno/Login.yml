@@ -23,10 +23,11 @@ runtime:
         if (res.getStatus() === 200) {
           const data = res.getBody();
           
-          if (data.access_token) {
+          if (data.access_token && data.refresh_token) {
             // Set the variable at the collection level
             bru.setVar("access_token", data.access_token);
-            console.log("Access token saved to collection!");
+            bru.setVar("refresh_token", data.refresh_token);
+            console.log("Tokens saved to collection!");
           } else {
             console.error("No access_token found in response body");
           }

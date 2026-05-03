@@ -31,7 +31,7 @@ class UserModel:
 
         access_token = AccessToken(
             CreateTokenPayload(
-                sub=str(self.id), duration=datetime.timedelta(minutes=15)
+                sub=str(self.id), duration=datetime.timedelta(minutes=0.25)
             )
         ).get()
         refresh_token = RefreshToken(
@@ -46,3 +46,12 @@ class UserModel:
             refresh_expires_at=int(refresh_expires.timestamp()),
             jti=str(refresh_token.jti),
         )
+
+    def refresh_access_token(self) -> str:
+        access_token = AccessToken(
+            CreateTokenPayload(
+                sub=str(self.id), duration=datetime.timedelta(minutes=0.5)
+            )
+        ).get()
+
+        return access_token

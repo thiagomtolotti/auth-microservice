@@ -37,3 +37,25 @@ examples:
           {
             "message": "This is a protected route"
           }
+  - name: Invalid token
+    request:
+      url: "{{api_url}}/protected"
+      method: GET
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: date
+          value: Sun, 03 May 2026 15:51:02 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "27"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Invalid token"
+          }
