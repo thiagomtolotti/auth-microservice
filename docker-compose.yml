@@ -1,7 +1,17 @@
 services:
-  web:
-    build: .
+  dev:
+    build:
+      context: .
+      target: development
     ports:
       - "8000:8000"
+    volumes:
+      - .:/app
+
+  tests:
+    image: tests
+    build:
+      context: .
+      target: testing
     volumes:
       - .:/app
