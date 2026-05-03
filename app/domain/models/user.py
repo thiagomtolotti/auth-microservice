@@ -4,8 +4,7 @@ import datetime
 
 from pydantic.networks import EmailStr
 
-from app.domain.models.tokens.main import AccessToken, RefreshToken, CreateTokenPayload
-from app.domain.vos.password import Password
+from app.domain.vos import Password, AccessToken, RefreshToken, CreateTokenPayload
 
 
 @dataclass

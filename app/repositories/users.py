@@ -6,7 +6,7 @@ from pydantic.networks import EmailStr
 
 from app.domain.models.user import UserModel
 from app.utils.types import CreateUserRepositoryDTO
-from app.domain.models.tokens.main import Token
+from app.domain.vos import Token
 
 
 class UsersRepository(ABC):

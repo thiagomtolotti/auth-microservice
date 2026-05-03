@@ -3,7 +3,7 @@ from fastapi.routing import APIRouter
 from starlette.responses import JSONResponse
 from typing_extensions import Annotated
 
-from app.domain.models.tokens.main import Token
+from app.domain.vos import Token
 
 
 class DefaultRouter:
