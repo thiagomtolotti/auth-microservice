@@ -1,1 +1,1 @@
-from .main import settings  # type: ignore
+from .settings import settings  # type: ignore

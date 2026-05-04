@@ -1,11 +1,12 @@
 import datetime
+from uuid import UUID
 
 import jwt
 
-from .main import AccessToken, CreateTokenPayload, RefreshToken, Token
+from app.domain.vos.tokens import AccessToken, CreateTokenPayload, RefreshToken, Token
 
 
-def test_token_vo():
+def test_create_success():
     token = Token(
         payload=CreateTokenPayload(
             sub="user_id_123",
@@ -14,16 +15,13 @@ def test_token_vo():
         token_type="access",
     )
 
-    token_str = token.get()
-
-    assert isinstance(token_str, str)
-    assert len(token_str) > 0
     assert token.payload.sub == "user_id_123"
     assert token.payload.type == "access"
-    assert token.payload.jti is not None
+    assert isinstance(token.payload.jti, str)
+    assert UUID(token.payload.jti)  # Validate that jti is a valid UUID
 
 
-def test_token_decoding():
+def test_decode_success():
     token = Token(
         payload=CreateTokenPayload(
             sub="user_id_123",
@@ -36,9 +34,23 @@ def test_token_decoding():
 
     decoded_payload = Token.decode(token_str)
 
+    print(decoded_payload)
+
     assert decoded_payload.sub == "user_id_123"
     assert decoded_payload.type == "access"
     assert decoded_payload.jti == token.payload.jti
+
+
+def test_decode_invalid_token():
+    invalid_token_str = "invalid.token.string"
+
+    try:
+        res = Token.decode(invalid_token_str)
+
+        print(res)
+        assert False, "Decoding should have failed for an invalid token"
+    except jwt.DecodeError:
+        pass  # Expected exception
 
 
 def test_token_expiration():

@@ -1,11 +1,10 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from fastapi.applications import FastAPI
 from fastapi.testclient import TestClient
 import pytest
 
 from app.api.default_router import DefaultRouter
-from app.domain.vos import Token
 
 
 @pytest.fixture
@@ -16,6 +15,12 @@ def client():
     app.include_router(default_router.router)
 
     return TestClient(app)
+
+
+@pytest.fixture()
+def mock_token_decode():
+    with patch("app.domain.vos.Token.decode") as mock:
+        yield mock
 
 
 def test_ping(client: TestClient):
@@ -32,8 +37,10 @@ def test_protected_route_without_token(client: TestClient):
     assert response.json() == {"message": "Authorization header missing"}
 
 
-def test_protected_route_with_invalid_token(client: TestClient):
-    Token.decode = MagicMock(side_effect=Exception("Invalid token"))
+def test_protected_route_with_invalid_token(
+    client: TestClient, mock_token_decode: MagicMock
+):
+    mock_token_decode.side_effect = Exception("Invalid token")
 
     response = client.get(
         "/protected", headers={"Authorization": "Bearer invalidtoken"}
@@ -43,8 +50,10 @@ def test_protected_route_with_invalid_token(client: TestClient):
     assert response.json() == {"message": "Invalid token"}
 
 
-def test_protected_route_with_valid_token(client: TestClient):
-    Token.decode = MagicMock(return_value={"user_id": "123"})
+def test_protected_route_with_valid_token(
+    client: TestClient, mock_token_decode: MagicMock
+):
+    mock_token_decode.return_value = {"user_id": "123"}
 
     response = client.get("/protected", headers={"Authorization": "Bearer validtoken"})
 

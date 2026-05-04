@@ -1,7 +1,7 @@
 import datetime
 
 from app.utils.types import CreateUserHandlerDTO, LoginHandlerDTO
-from app.domain.vos import CreateTokenPayload, RefreshToken
+from app.domain.vos.tokens import CreateTokenPayload, RefreshToken
 from app.repositories.users import InMemoryUsersRepository
 from app.services.users import UsersService
 
