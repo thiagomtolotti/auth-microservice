@@ -16,6 +16,14 @@ services:
     volumes:
       - .:/app
 
+  tests-watch:
+    image: testing-watch
+    build:
+      context: .
+      target: testing-watch
+    volumes:
+      - .:/app
+
   coverage:
     image: coverage
     build:
