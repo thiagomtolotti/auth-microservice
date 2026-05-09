@@ -3,7 +3,7 @@
 args =
 
 dev:
-	sudo docker-compose run --build --rm dev
+	sudo docker compose up --build dev --remove-orphans
 
 generate-certs:
 	mkdir -p certs

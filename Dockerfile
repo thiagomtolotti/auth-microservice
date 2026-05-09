@@ -37,6 +37,4 @@ FROM testing AS coverage
 
 RUN pip install pytest pytest-cov
 
-COPY . .
-
-CMD ["pytest", "--cov=app", "--cov-report=html"]
+CMD ["--cov=app", "--cov-report=html"]
