@@ -30,7 +30,7 @@ def test_decode_success():
         token_type="access",
     )
 
-    token_str = token.get()
+    token_str = token.__str__()
 
     decoded_payload = Token.decode(token_str)
 
@@ -62,7 +62,7 @@ def test_token_expiration():
         token_type="access",
     )
 
-    token_str = token.get()
+    token_str = token.__str__()
 
     try:
         Token.decode(token_str)
@@ -80,7 +80,7 @@ def test_token_invalid_signature():
         token_type="access",
     )
 
-    token_str = token.get()
+    token_str = token.__str__()
 
     # Tamper with the token to invalidate the signature
     tampered_token_str = token_str + "tampered"

@@ -1,12 +1,28 @@
+import datetime
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic.networks import EmailStr
 
-from app.domain.models.user import UserModel
 from app.domain.vos.password import Password
 from app.utils.types import CreateUserRepositoryDTO
+
+
+@dataclass
+class RefreshTokenData:
+    user_id: UUID
+    created_at: int
+    expires_at: int
+    jti: str
+
+
+@dataclass
+class User:
+    email: EmailStr
+    password: Password
+    id: UUID
 
 
 class UsersRepository(ABC):
@@ -15,7 +31,7 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
-    def find_by_email(self, email: str) -> UserModel | None:
+    def find_by_email(self, email: str) -> User | None:
         pass
 
     @abstractmethod
@@ -30,7 +46,7 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
-    def find_by_id(self, id: UUID) -> UserModel | None:
+    def find_by_id(self, id: UUID) -> User | None:
         pass
 
     @abstractmethod
@@ -39,22 +55,20 @@ class UsersRepository(ABC):
 
         pass
 
-
-@dataclass
-class RefreshTokenData:
-    user_id: UUID
-    created_at: int
-    expires_at: int
-    jti: str
+    @abstractmethod
+    def is_refresh_token_valid(self, user_id: UUID, jti: str) -> bool:
+        """Checks if a refresh token is valid for a given user. Returns True if the token is valid, False otherwise."""
+        pass
 
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
-        self.users: list[UserModel] = []
+        self.users: list[User] = []
         self.refresh_tokens: list[RefreshTokenData] = []
 
     def create(self, data: CreateUserRepositoryDTO):
-        user = UserModel(
+        user = User(
+            id=uuid4(),
             email=data.email,
             password=data.password,
         )
@@ -97,7 +111,16 @@ class InMemoryUsersRepository(UsersRepository):
         print(f"Current refresh tokens: {len(self.refresh_tokens)}")
         return prev_count > after_count
 
-    def find_by_id(self, id: UUID) -> UserModel | None:
+    def is_refresh_token_valid(self, user_id: UUID, jti: str) -> bool:
+        now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+
+        for token in self.refresh_tokens:
+            if token.user_id == user_id and token.jti == jti and token.expires_at > now:
+                return True
+
+        return False
+
+    def find_by_id(self, id: UUID) -> User | None:
         for user in self.users:
             if user.id == id:
                 return user

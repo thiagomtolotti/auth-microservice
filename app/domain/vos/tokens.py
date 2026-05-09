@@ -39,7 +39,7 @@ class Token(ABC):
             jti=str(jti),
         )
 
-    def get(self) -> str:
+    def __str__(self) -> str:
         return str(
             jwt.encode(
                 self.payload.__dict__, settings.private_key.encode(), algorithm="RS256"

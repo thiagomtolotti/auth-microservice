@@ -111,7 +111,7 @@ def test_refresh_token_invalid_token(service: UsersService, email: str, password
     )
 
     with pytest.raises(Exception) as exc_info:
-        service.refresh_token(invalid_token.get())
+        service.refresh_token(invalid_token.__str__())
 
     assert str(exc_info.value) == "Invalid refresh token"
 
@@ -127,6 +127,6 @@ def test_refresh_token_expired_token(service: UsersService, email: str, password
     )
 
     with pytest.raises(Exception) as exc_info:
-        service.refresh_token(expired_token.get())
+        service.refresh_token(expired_token.__str__())
 
     assert str(exc_info.value) == "Signature has expired"

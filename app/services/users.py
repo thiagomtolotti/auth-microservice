@@ -1,10 +1,17 @@
+import datetime
 from uuid import UUID
 
 from pydantic.networks import EmailStr
 
 from app.domain.vos.password import Password
 
-from app.domain.vos.tokens import Token, TokenPayload
+from app.domain.vos.tokens import (
+    AccessToken,
+    CreateTokenPayload,
+    RefreshToken,
+    Token,
+    TokenPayload,
+)
 from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
@@ -46,17 +53,24 @@ class UsersService:
         if not user.password.verify(data.password):
             raise LoginFailedException("Invalid email or password")
 
-        login_data = user.login()
+        access_token = AccessToken(
+            CreateTokenPayload(
+                sub=str(user.id), duration=datetime.timedelta(minutes=15)
+            )
+        )
+        refresh_token = RefreshToken(
+            CreateTokenPayload(sub=str(user.id), duration=datetime.timedelta(days=7))
+        )
 
         self.repository.save_refresh_token(
             user.id,
-            login_data.created_at,
-            login_data.refresh_expires_at,
-            login_data.jti,
+            refresh_token.payload.iat,
+            refresh_token.payload.exp,
+            refresh_token.payload.jti,
         )
 
         return LoginServiceResponseDTO(
-            access_token=login_data.access_token, refresh_token=login_data.refresh_token
+            access_token=str(access_token), refresh_token=str(refresh_token)
         )
 
     def logout(self, email: EmailStr):
@@ -78,9 +92,18 @@ class UsersService:
         if not user:
             raise UserNotFoundException("User not found")
 
-        new_access_token = user.refresh_access_token()
+        is_valid = self.repository.is_refresh_token_valid(user.id, token.jti)
 
-        return new_access_token
+        if not is_valid:
+            raise LoginFailedException("Invalid refresh token")
+
+        new_access_token = AccessToken(
+            CreateTokenPayload(
+                sub=str(user.id), duration=datetime.timedelta(minutes=15)
+            )
+        )
+
+        return str(new_access_token)
 
     def change_password(self, token: TokenPayload, new_password: str):
         user = self.repository.find_by_id(UUID(token.sub))
@@ -88,6 +111,4 @@ class UsersService:
         if not user:
             raise UserNotFoundException("User not found")
 
-        user.change_password(new_password)
-
-        self.repository.update_password(user.id, user.password)
+        self.repository.update_password(user.id, Password(new_password))
