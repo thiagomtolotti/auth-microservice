@@ -1,6 +1,10 @@
-from fastapi.routing import APIRouter
-from pydantic.main import BaseModel
+from typing import Annotated
 
+from fastapi import Depends
+from fastapi.routing import APIRouter
+from fastapi.params import Header
+
+from pydantic.main import BaseModel
 from app.services.users import UsersService
 from app.utils.types import (
     CreateUserHandlerDTO,
@@ -8,6 +12,7 @@ from app.utils.types import (
     LoginHandlerResponseDTO,
     LogoutHandlerDTO,
 )
+from .require_auth import require_auth
 
 
 class RefreshTokenHandlerDTO(BaseModel):
@@ -27,6 +32,9 @@ class UsersRouter:
         self.router.add_api_route("/login", self.login, methods=["POST"])
         self.router.add_api_route("/logout", self.logout, methods=["POST"])
         self.router.add_api_route("/refresh", self.refresh_token, methods=["POST"])
+        self.router.add_api_route(
+            "/change_password", self.change_password, methods=["POST"]
+        )
 
     def create_user(self, data: CreateUserHandlerDTO):
         self.service.create(data)
@@ -52,3 +60,10 @@ class UsersRouter:
         access_token = self.service.refresh_token(data.refresh_token)
 
         return RefreshTokenHandlerResponseDTO(access_token=access_token)
+
+    def change_password(
+        self,
+        authorization: Annotated[str | None, Header()] = None,
+        _=Depends(require_auth),
+    ):
+        return {"message": "Password changed successfully"}

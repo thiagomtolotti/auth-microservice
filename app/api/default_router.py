@@ -1,9 +1,7 @@
-from fastapi.params import Header
+from fastapi import Depends
 from fastapi.routing import APIRouter
-from starlette.responses import JSONResponse
-from typing_extensions import Annotated
 
-from app.domain.vos import Token
+from .require_auth import require_auth
 
 
 class DefaultRouter:
@@ -16,17 +14,5 @@ class DefaultRouter:
     def ping(self):
         return {"message": "Service is alive"}
 
-    def protected_route(self, authorization: Annotated[str | None, Header()] = None):
-        token = authorization.split(" ")[1] if authorization else None
-
-        if not token:
-            return JSONResponse(
-                status_code=401, content={"message": "Authorization header missing"}
-            )
-
-        try:
-            Token.decode(token)
-        except Exception:
-            return JSONResponse(status_code=401, content={"message": "Invalid token"})
-
+    def protected_route(self, _=Depends(require_auth)):
         return {"message": "This is a protected route"}
