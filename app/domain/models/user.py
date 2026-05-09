@@ -54,3 +54,6 @@ class UserModel:
         ).get()
 
         return access_token
+
+    def change_password(self, new_password: str):
+        self.password = Password(new_password)

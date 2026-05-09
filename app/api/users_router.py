@@ -1,16 +1,15 @@
-from typing import Annotated
-
 from fastapi import Depends
 from fastapi.routing import APIRouter
-from fastapi.params import Header
 
 from pydantic.main import BaseModel
+from app.domain.vos.tokens import TokenPayload
 from app.services.users import UsersService
 from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginHandlerResponseDTO,
     LogoutHandlerDTO,
+    ChangePasswordHandlerDTO,
 )
 from .require_auth import require_auth
 
@@ -63,7 +62,9 @@ class UsersRouter:
 
     def change_password(
         self,
-        authorization: Annotated[str | None, Header()] = None,
-        _=Depends(require_auth),
+        data: ChangePasswordHandlerDTO,
+        refresh_token: TokenPayload = Depends(require_auth),
     ):
+        self.service.change_password(refresh_token, new_password=data.new_password)
+
         return {"message": "Password changed successfully"}

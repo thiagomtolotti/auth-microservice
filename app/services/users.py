@@ -1,7 +1,10 @@
+from uuid import UUID
+
 from pydantic.networks import EmailStr
 
 from app.domain.vos.password import Password
 
+from app.domain.vos.tokens import Token, TokenPayload
 from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
@@ -11,6 +14,7 @@ from app.domain.exceptions import (
     LoginFailedException,
     LogoutFailedException,
     UserAlreadyExistsException,
+    UserNotFoundException,
 )
 
 from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
@@ -67,11 +71,23 @@ class UsersService:
             raise LogoutFailedException("Failed to log out user")
 
     def refresh_token(self, refresh_token: str) -> str:
-        user = self.repository.find_by_refresh_token(refresh_token)
+        token = Token.decode(refresh_token)
+
+        user = self.repository.find_by_id(UUID(token.sub))
 
         if not user:
-            raise LoginFailedException("Invalid refresh token")
+            raise UserNotFoundException("User not found")
 
-        access_token = user.refresh_access_token()
+        new_access_token = user.refresh_access_token()
 
-        return access_token
+        return new_access_token
+
+    def change_password(self, token: TokenPayload, new_password: str):
+        user = self.repository.find_by_id(UUID(token.sub))
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        user.change_password(new_password)
+
+        self.repository.update_password(user.id, user.password)

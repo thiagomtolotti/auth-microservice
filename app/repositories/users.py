@@ -5,8 +5,8 @@ from uuid import UUID
 from pydantic.networks import EmailStr
 
 from app.domain.models.user import UserModel
+from app.domain.vos.password import Password
 from app.utils.types import CreateUserRepositoryDTO
-from app.domain.vos import Token
 
 
 class UsersRepository(ABC):
@@ -30,7 +30,13 @@ class UsersRepository(ABC):
         pass
 
     @abstractmethod
-    def find_by_refresh_token(self, refresh_token: str) -> UserModel | None:
+    def find_by_id(self, id: UUID) -> UserModel | None:
+        pass
+
+    @abstractmethod
+    def update_password(self, user_id: UUID, new_password: Password) -> bool:
+        """Updates the password for a given user. Returns True if the password was updated successfully, False otherwise."""
+
         pass
 
 
@@ -91,13 +97,17 @@ class InMemoryUsersRepository(UsersRepository):
         print(f"Current refresh tokens: {len(self.refresh_tokens)}")
         return prev_count > after_count
 
-    def find_by_refresh_token(self, refresh_token: str) -> UserModel | None:
-        token_data = Token.decode(refresh_token)
-
-        for token in self.refresh_tokens:
-            if token.jti == token_data.jti:
-                for user in self.users:
-                    if user.id == token.user_id:
-                        return user
+    def find_by_id(self, id: UUID) -> UserModel | None:
+        for user in self.users:
+            if user.id == id:
+                return user
 
         return None
+
+    def update_password(self, user_id: UUID, new_password: Password) -> bool:
+        for user in self.users:
+            if user.id == user_id:
+                user.password = new_password
+                return True
+
+        return False

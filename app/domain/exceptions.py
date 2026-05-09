@@ -38,3 +38,9 @@ class UserAlreadyExistsException(DomainException):
     """Exception raised when trying to create a user that already exists."""
 
     pass
+
+
+class UserNotFoundException(DomainException):
+    """Exception raised when a user is not found."""
+
+    pass

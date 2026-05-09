@@ -37,3 +37,8 @@ class LoginHandlerResponseDTO(BaseModel):
 
 class LogoutHandlerDTO(BaseModel):
     email: EmailStr
+
+
+@dataclass
+class ChangePasswordHandlerDTO:
+    new_password: str
