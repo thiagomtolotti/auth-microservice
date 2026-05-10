@@ -55,3 +55,15 @@ def test_change_password_invalid_input(client: TestClient):
 
     response = change_password(client, access_token, "nospecialchars123")
     assert response.status_code == 422
+
+
+def test_change_password_same_as_old(client: TestClient):
+    login_res = register_and_login(client, TEST_EMAIL, TEST_PASSWORD)
+
+    json = login_res.json()
+
+    access_token = json["access_token"]
+
+    response = change_password(client, access_token, TEST_PASSWORD)
+
+    assert response.status_code == 422

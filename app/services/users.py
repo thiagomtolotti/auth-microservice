@@ -14,6 +14,7 @@ from app.utils.types import (
     LoginServiceResponseDTO,
 )
 from app.domain.exceptions import (
+    InvalidPasswordException,
     LoginFailedException,
     LogoutFailedException,
     UserAlreadyExistsException,
@@ -97,4 +98,11 @@ class UsersService:
         if not user:
             raise UserNotFoundException("User not found")
 
-        self.repository.update_password(user.id, Password(new_password))
+        new_pass = Password(new_password)
+
+        if user.password.verify(new_password):
+            raise InvalidPasswordException(
+                "New password cannot be the same as the old password"
+            )
+
+        self.repository.update_password(user.id, new_pass)
