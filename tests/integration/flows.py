@@ -18,3 +18,17 @@ def register_and_login(client: TestClient, email: str, password: str) -> Respons
 
 def logout(client: TestClient, token: str) -> Response:
     return client.post("/users/logout", headers={"Authorization": f"Bearer {token}"})
+
+
+def access_protected(client: TestClient, token: str) -> Response:
+    return client.get("/protected", headers={"Authorization": f"Bearer {token}"})
+
+
+def refresh_token(
+    client: TestClient, refresh_token: str, access_token: str
+) -> Response:
+    return client.post(
+        "/users/refresh",
+        headers={"Authorization": f"Bearer {access_token}"},
+        json={"refresh_token": refresh_token},
+    )
