@@ -35,10 +35,6 @@ class LoginHandlerResponseDTO(BaseModel):
     refresh_token: str
 
 
-class LogoutHandlerDTO(BaseModel):
-    email: EmailStr
-
-
 @dataclass
 class ChangePasswordHandlerDTO:
     new_password: str

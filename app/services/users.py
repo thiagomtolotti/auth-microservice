@@ -1,8 +1,6 @@
 import datetime
 from uuid import UUID
 
-from pydantic.networks import EmailStr
-
 from app.domain.vos.password import Password
 
 from app.domain.vos.tokens import (
@@ -73,8 +71,8 @@ class UsersService:
             access_token=str(access_token), refresh_token=str(refresh_token)
         )
 
-    def logout(self, email: EmailStr):
-        user = self.repository.find_by_email(email)
+    def logout(self, access_token: TokenPayload):
+        user = self.repository.find_by_id(UUID(access_token.sub))
 
         if not user:
             raise LogoutFailedException("Invalid email address")

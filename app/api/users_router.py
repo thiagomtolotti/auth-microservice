@@ -9,7 +9,6 @@ from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginHandlerResponseDTO,
-    LogoutHandlerDTO,
     ChangePasswordHandlerDTO,
 )
 from .require_auth import require_auth
@@ -55,11 +54,13 @@ class UsersRouter:
         )
 
     def logout(
-        self, data: LogoutHandlerDTO, service: UsersService = Depends(get_users_service)
+        self,
+        service: UsersService = Depends(get_users_service),
+        access_token: TokenPayload = Depends(require_auth),
     ):
-        service.logout(data.email)
+        service.logout(access_token)
 
-        return {"message": "User logged out successfully"}
+        return {"message": "Successfully logged out"}
 
     def refresh_token(
         self,
