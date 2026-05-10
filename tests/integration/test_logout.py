@@ -16,3 +16,12 @@ def test_logout(client: TestClient):
 
     assert res.status_code == 200
     assert res.json() == {"message": "Successfully logged out"}
+
+
+def test_logout_with_invalid_token(client: TestClient):
+    res = logout(client, "")
+
+    print(res.json())
+
+    assert res.status_code == 401
+    assert res.json() == {"detail": "Invalid token"}
