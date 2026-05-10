@@ -8,10 +8,7 @@ http:
   url: "{{api_url}}/users/logout"
   body:
     type: json
-    data: |-
-      {
-        "email": "thiagotolotti@gmail.com"
-      }
+    data: ""
   auth: inherit
 
 settings:
