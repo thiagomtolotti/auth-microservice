@@ -32,3 +32,11 @@ def refresh_token(
         headers={"Authorization": f"Bearer {access_token}"},
         json={"refresh_token": refresh_token},
     )
+
+
+def change_password(client: TestClient, token: str, new_password: str) -> Response:
+    return client.post(
+        "/users/change_password",
+        headers={"Authorization": f"Bearer {token}"},
+        json={"new_password": new_password},
+    )
