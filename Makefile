@@ -12,10 +12,10 @@ generate-certs:
 	chmod 600 certs/private_key.pem
 
 tests: 
-	sudo docker-compose run --build --rm tests $(args)
+	sudo docker-compose run --build --rm tests ${path}
 
 tests-watch:
-	sudo docker-compose run --build --rm tests-watch
+	sudo docker-compose run --build --rm tests-watch pytest-watch ${path}
 
 coverage:
 	sudo docker-compose run --build --rm coverage
