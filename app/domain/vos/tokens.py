@@ -67,6 +67,15 @@ class AccessToken(Token):
         )
         super().__init__(payload, token_type="access")
 
+    @staticmethod
+    def aa(token: str) -> "AccessToken":
+        payload = Token.decode(token)
+
+        if payload.type != "access":
+            raise InvalidTokenException("Invalid token type")
+
+        return AccessToken(sub=payload.sub)
+
 
 class RefreshToken(Token):
     def __init__(self, sub: str):

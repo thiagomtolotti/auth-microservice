@@ -6,7 +6,6 @@ from app.domain.vos.tokens import (
     AccessToken,
     RefreshToken,
     Token,
-    TokenPayload,
 )
 from app.utils.types import (
     CreateUserHandlerDTO,
@@ -64,8 +63,8 @@ class UsersService:
             access_token=str(access_token), refresh_token=str(refresh_token)
         )
 
-    def logout(self, access_token: TokenPayload):
-        user = self.repository.find_by_id(UUID(access_token.sub))
+    def logout(self, access_token: AccessToken):
+        user = self.repository.find_by_id(UUID(access_token.payload.sub))
 
         if not user:
             raise LogoutFailedException("Invalid email address")
@@ -92,8 +91,8 @@ class UsersService:
 
         return str(new_access_token)
 
-    def change_password(self, token: TokenPayload, new_password: str):
-        user = self.repository.find_by_id(UUID(token.sub))
+    def change_password(self, token: AccessToken, new_password: str):
+        user = self.repository.find_by_id(UUID(token.payload.sub))
 
         if not user:
             raise UserNotFoundException("User not found")

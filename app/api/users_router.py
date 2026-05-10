@@ -3,7 +3,7 @@ from fastapi.routing import APIRouter
 
 from pydantic.main import BaseModel
 from app.dependencies import get_users_service
-from app.domain.vos.tokens import TokenPayload
+from app.domain.vos.tokens import AccessToken
 from app.services.users import UsersService
 from app.utils.types import (
     CreateUserHandlerDTO,
@@ -56,7 +56,7 @@ class UsersRouter:
     def logout(
         self,
         service: UsersService = Depends(get_users_service),
-        access_token: TokenPayload = Depends(require_auth),
+        access_token: AccessToken = Depends(require_auth),
     ):
         service.logout(access_token)
 
@@ -74,9 +74,9 @@ class UsersRouter:
     def change_password(
         self,
         data: ChangePasswordHandlerDTO,
-        refresh_token: TokenPayload = Depends(require_auth),
+        access_token: AccessToken = Depends(require_auth),
         service: UsersService = Depends(get_users_service),
     ):
-        service.change_password(refresh_token, new_password=data.new_password)
+        service.change_password(access_token, new_password=data.new_password)
 
         return {"message": "Password changed successfully"}

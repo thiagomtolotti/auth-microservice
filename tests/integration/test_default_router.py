@@ -53,3 +53,15 @@ def test_protected_with_expired_token(
     )
 
     assert response.status_code == 401
+
+
+def test_protected_refresh_token(client: TestClient):
+    login = register_and_login(client, TEST_EMAIL, TEST_PASSWORD)
+    json = login.json()
+    refresh_token = json["refresh_token"]
+
+    response = client.get(
+        "/protected", headers={"Authorization": f"Bearer {refresh_token}"}
+    )
+
+    assert response.status_code == 401
