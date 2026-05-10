@@ -36,3 +36,33 @@ settings:
   timeout: 0
   followRedirects: true
   maxRedirects: 5
+
+examples:
+  - name: Success
+    request:
+      url: "{{api_url}}/users/refresh"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "refresh_token": "{{refresh_token}}"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 10 May 2026 19:53:38 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "587"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjMGM3M2I1Ny05ODVkLTRlOWUtYjgyNC1iMjdiOWJiN2YzNGUiLCJpYXQiOjE3Nzg0NDI4MTksImV4cCI6MTc3ODQ0MzcxOSwidHlwZSI6ImFjY2VzcyIsImp0aSI6IjM2M2Q4ZjI3LTQ2ZDMtNDcwNy04ZjM1LTIzMGFmZGM0YzQzMCJ9.UP5WDwEwt-LaVIaBFcadQKgvPUj0zhZ7rfvY5BoLO_Svg7MnJhexKwVY0SegThE-YHdPKcyXBNGOXKtcY7mHeOO6W5fnZlmGVYoRK7cDSA_aQYiERDyr1bR6qtyFFLgRujCIAlHwUwxeteCv1Cdvl0jQg8ofrI0krtYrAZSYvCxfu0hRsIu9W8DA0jDKndRf8JdwTWliX9SE8eTCsN-GeXHKIXXSgza4QU3RLwnN_xY3fgLTcKNu9uCPQ3dSCr5L6yqAGYzk4mcZfB07KVAbB5PUnP1YAFp05VgvKpPJWBGLwUDltd5nLC7SlB-gX-7nNkZ4IOCvjOo_cNrNgnUl7A"
+          }

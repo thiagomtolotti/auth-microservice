@@ -60,6 +60,11 @@ class UsersRepository(ABC):
         """Checks if a refresh token is valid for a given user. Returns True if the token is valid, False otherwise."""
         pass
 
+    @abstractmethod
+    def delete(self, user_id: UUID) -> bool:
+        """Deletes a user by their ID. Returns True if the user was deleted successfully, False otherwise."""
+        pass
+
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
@@ -134,3 +139,12 @@ class InMemoryUsersRepository(UsersRepository):
                 return True
 
         return False
+
+    def delete(self, user_id: UUID) -> bool:
+        prev_count = len(self.users)
+
+        self.users = [user for user in self.users if user.id != user_id]
+
+        after_count = len(self.users)
+
+        return prev_count > after_count

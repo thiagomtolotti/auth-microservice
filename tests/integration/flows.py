@@ -40,3 +40,10 @@ def change_password(client: TestClient, token: str, new_password: str) -> Respon
         headers={"Authorization": f"Bearer {token}"},
         json={"new_password": new_password},
     )
+
+
+def delete_user(client: TestClient, token: str) -> Response:
+    return client.delete(
+        "/users/",
+        headers={"Authorization": f"Bearer {token}"},
+    )

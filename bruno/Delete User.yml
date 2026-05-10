@@ -1,0 +1,62 @@
+info:
+  name: Delete User
+  type: http
+  seq: 8
+
+http:
+  method: DELETE
+  url: "{{api_url}}/users"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Success
+    request:
+      url: "{{api_url}}/users"
+      method: DELETE
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: date
+          value: Sun, 10 May 2026 19:55:05 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "39"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User deleted successfully"
+          }
+  - name: User Not Found
+    request:
+      url: "{{api_url}}/users"
+      method: DELETE
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: date
+          value: Sun, 10 May 2026 19:55:18 GMT
+        - name: server
+          value: uvicorn
+        - name: content-length
+          value: "58"
+        - name: content-type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "type": "UserNotFoundException",
+            "detail": "User not found"
+          }

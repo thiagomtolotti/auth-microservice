@@ -33,6 +33,7 @@ class UsersRouter:
         self.router.add_api_route(
             "/change_password", self.change_password, methods=["POST"]
         )
+        self.router.add_api_route("/", self.delete_user, methods=["DELETE"])
 
     def create_user(
         self,
@@ -80,3 +81,12 @@ class UsersRouter:
         service.change_password(access_token, new_password=data.new_password)
 
         return {"message": "Password changed successfully"}
+
+    def delete_user(
+        self,
+        access_token: AccessToken = Depends(require_auth),
+        service: UsersService = Depends(get_users_service),
+    ):
+        service.delete_user(access_token)
+
+        return {"message": "User deleted successfully"}

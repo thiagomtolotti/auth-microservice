@@ -105,3 +105,14 @@ class UsersService:
             )
 
         self.repository.update_password(user.id, new_pass)
+
+    def delete_user(self, token: AccessToken):
+        user = self.repository.find_by_id(UUID(token.payload.sub))
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        sucess = self.repository.delete(user.id)
+
+        if not sucess:
+            raise UserNotFoundException("User not found")
