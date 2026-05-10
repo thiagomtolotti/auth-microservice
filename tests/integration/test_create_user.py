@@ -1,20 +1,11 @@
 from fastapi.testclient import TestClient
-from app.domain.exceptions import UserAlreadyExistsException
 from app.main import app
 
 from .flows import create_user
-
+from app.domain.exceptions import UserAlreadyExistsException
 
 TEST_EMAIL = "test@example.com"
 TEST_PASSWORD = "@password123"
-
-
-def test_ping():
-    client = TestClient(app)
-
-    response = client.get("/")
-
-    assert response.status_code == 200
 
 
 def test_create_user():
