@@ -3,7 +3,7 @@ import pytest
 
 from .constants import TEST_EMAIL, TEST_PASSWORD
 
-from .flows import register_and_login
+from .flows import register_and_login, delete_user, access_protected
 
 
 def test_ping(client: TestClient):
@@ -24,17 +24,12 @@ def test_protected_with_token(client: TestClient):
     json = login.json()
     access_token = json["access_token"]
 
-    response = client.get(
-        "/protected", headers={"Authorization": f"Bearer {access_token}"}
-    )
-
+    response = access_protected(client, access_token)
     assert response.status_code == 200
 
 
 def test_protected_with_invalid_token(client: TestClient):
-    response = client.get(
-        "/protected", headers={"Authorization": "Bearer invalid_token"}
-    )
+    response = access_protected(client, "invalid_token")
 
     assert response.status_code == 401
 
@@ -48,9 +43,7 @@ def test_protected_with_expired_token(
     json = login.json()
     access_token = json["access_token"]
 
-    response = client.get(
-        "/protected", headers={"Authorization": f"Bearer {access_token}"}
-    )
+    response = access_protected(client, access_token)
 
     assert response.status_code == 401
 
@@ -65,3 +58,15 @@ def test_protected_refresh_token(client: TestClient):
     )
 
     assert response.status_code == 401
+
+
+def test_protected_deleted_user(client: TestClient):
+    login = register_and_login(client, TEST_EMAIL, TEST_PASSWORD)
+    json = login.json()
+    access_token = json["access_token"]
+
+    delete_user(client, access_token)
+
+    response = access_protected(client, access_token)
+
+    assert response.status_code == 400

@@ -5,7 +5,6 @@ from app.domain.vos.password import Password
 from app.domain.vos.tokens import (
     AccessToken,
     RefreshToken,
-    Token,
 )
 from app.utils.types import (
     CreateUserHandlerDTO,
@@ -75,14 +74,14 @@ class UsersService:
             raise LogoutFailedException("Failed to log out user")
 
     def refresh_token(self, refresh_token: str) -> str:
-        token = Token.decode(refresh_token)
+        token = RefreshToken.decode(refresh_token)
 
-        user = self.repository.find_by_id(UUID(token.sub))
+        user = self.repository.find_by_id(UUID(token.payload.sub))
 
         if not user:
             raise UserNotFoundException("User not found")
 
-        is_valid = self.repository.is_refresh_token_valid(user.id, token.jti)
+        is_valid = self.repository.is_refresh_token_valid(user.id, token.payload.jti)
 
         if not is_valid:
             raise LoginFailedException("Invalid refresh token")
@@ -116,3 +115,11 @@ class UsersService:
 
         if not sucess:
             raise UserNotFoundException("User not found")
+
+    def find_user(self, user_id: UUID):
+        user = self.repository.find_by_id(user_id)
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        return user

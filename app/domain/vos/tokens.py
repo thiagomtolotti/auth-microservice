@@ -1,10 +1,10 @@
 import jwt
 import datetime
 from abc import ABC
-from uuid import uuid4
+from uuid import UUID, uuid4
 from dataclasses import dataclass
 
-from app.api.require_auth import InvalidTokenException
+from app.domain.exceptions import InvalidTokenException
 from app.utils import settings
 from app.constants import ACCESS_TOKEN_DURATION, REFRESH_TOKEN_DURATION
 
@@ -25,9 +25,9 @@ class TokenPayload:
 
 
 class Token(ABC):
-    def __init__(self, payload: CreateTokenPayload, token_type: str):
-        jti = uuid4()
-
+    def __init__(
+        self, payload: CreateTokenPayload, token_type: str, jti: UUID = uuid4()
+    ):
         self.jti = jti
 
         now = datetime.datetime.now(datetime.timezone.utc)
@@ -49,7 +49,7 @@ class Token(ABC):
         )
 
     @staticmethod
-    def decode(token: str) -> TokenPayload:
+    def _decode(token: str) -> TokenPayload:
         try:
             decoded = jwt.decode(
                 token, settings.public_key.encode(), algorithms=["RS256"]
@@ -61,25 +61,34 @@ class Token(ABC):
 
 
 class AccessToken(Token):
-    def __init__(self, sub: str):
+    def __init__(self, sub: str, jti: UUID = uuid4()):
         payload = CreateTokenPayload(
             sub=sub, duration=datetime.timedelta(seconds=ACCESS_TOKEN_DURATION)
         )
-        super().__init__(payload, token_type="access")
+        super().__init__(payload, token_type="access", jti=jti)
 
     @staticmethod
-    def aa(token: str) -> "AccessToken":
-        payload = Token.decode(token)
+    def decode(token: str) -> "AccessToken":
+        payload = Token._decode(token)
 
         if payload.type != "access":
             raise InvalidTokenException("Invalid token type")
 
-        return AccessToken(sub=payload.sub)
+        return AccessToken(sub=payload.sub, jti=UUID(payload.jti))
 
 
 class RefreshToken(Token):
-    def __init__(self, sub: str):
+    def __init__(self, sub: str, jti: UUID = uuid4()):
         payload = CreateTokenPayload(
             sub=sub, duration=datetime.timedelta(seconds=REFRESH_TOKEN_DURATION)
         )
-        super().__init__(payload, token_type="refresh")
+        super().__init__(payload, token_type="refresh", jti=jti)
+
+    @staticmethod
+    def decode(token: str) -> "RefreshToken":
+        payload = Token._decode(token)
+
+        if payload.type != "refresh":
+            raise InvalidTokenException("Invalid token type")
+
+        return RefreshToken(sub=payload.sub, jti=UUID(payload.jti))

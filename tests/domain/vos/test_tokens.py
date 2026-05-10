@@ -32,7 +32,7 @@ def test_decode_success():
 
     token_str = token.__str__()
 
-    decoded_payload = Token.decode(token_str)
+    decoded_payload = Token._decode(token_str)
 
     print(decoded_payload)
 
@@ -45,7 +45,7 @@ def test_decode_invalid_token():
     invalid_token_str = "invalid.token.string"
 
     try:
-        res = Token.decode(invalid_token_str)
+        res = Token._decode(invalid_token_str)
 
         print(res)
         assert False, "Decoding should have failed for an invalid token"
@@ -65,7 +65,7 @@ def test_token_expiration():
     token_str = token.__str__()
 
     try:
-        Token.decode(token_str)
+        Token._decode(token_str)
         assert False, "Token should have expired"
     except jwt.ExpiredSignatureError:
         pass  # Expected exception
@@ -86,7 +86,7 @@ def test_token_invalid_signature():
     tampered_token_str = token_str + "tampered"
 
     try:
-        Token.decode(tampered_token_str)
+        Token._decode(tampered_token_str)
         assert False, "Token should have invalid signature"
     except jwt.InvalidSignatureError:
         pass  # Expected exception
