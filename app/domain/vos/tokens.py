@@ -4,6 +4,7 @@ from abc import ABC
 from uuid import uuid4
 from dataclasses import dataclass
 
+from app.api.require_auth import InvalidTokenException
 from app.utils import settings
 from app.constants import ACCESS_TOKEN_DURATION, REFRESH_TOKEN_DURATION
 
@@ -49,7 +50,12 @@ class Token(ABC):
 
     @staticmethod
     def decode(token: str) -> TokenPayload:
-        decoded = jwt.decode(token, settings.public_key.encode(), algorithms=["RS256"])
+        try:
+            decoded = jwt.decode(
+                token, settings.public_key.encode(), algorithms=["RS256"]
+            )
+        except jwt.PyJWTError:
+            raise InvalidTokenException("Invalid token")
 
         return TokenPayload(**decoded)
 

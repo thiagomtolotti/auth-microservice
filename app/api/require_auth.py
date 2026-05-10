@@ -1,10 +1,10 @@
 from typing import Annotated
 
-from fastapi.exceptions import HTTPException
 from fastapi.params import Header
 
-from app.domain.vos import Token
-from app.domain.vos.tokens import TokenPayload
+from app.domain.exceptions import InvalidTokenException
+
+from app.domain.vos.tokens import Token, TokenPayload
 
 
 def _get_auth_token(auth_header: str | None) -> str | None:
@@ -19,18 +19,13 @@ def _get_auth_token(auth_header: str | None) -> str | None:
     return parts[1]
 
 
-class InvalidTokenException(HTTPException):
-    def __init__(self, detail: str = "Invalid token"):
-        super().__init__(status_code=401, detail=detail)
-
-
 def require_auth(authorization: Annotated[str | None, Header()] = None) -> TokenPayload:
     token = _get_auth_token(authorization)
 
     if not token:
-        raise InvalidTokenException()
+        raise InvalidTokenException("Authorization header missing or malformed")
 
     try:
         return Token.decode(token)
     except Exception:
-        raise InvalidTokenException()
+        raise InvalidTokenException("Invalid token")

@@ -1,6 +1,6 @@
 from typing import Any
 
-from fastapi.exceptions import RequestValidationError
+from fastapi.exceptions import HTTPException, RequestValidationError
 
 
 class DomainException(Exception):
@@ -44,3 +44,8 @@ class UserNotFoundException(DomainException):
     """Exception raised when a user is not found."""
 
     pass
+
+
+class InvalidTokenException(HTTPException):
+    def __init__(self, detail: str = "Invalid token"):
+        super().__init__(status_code=401, detail=detail)

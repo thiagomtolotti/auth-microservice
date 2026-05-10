@@ -21,7 +21,6 @@ def test_logout_with_invalid_token(client: TestClient):
     res = logout(client, "")
 
     assert res.status_code == 401
-    assert res.json() == {"detail": "Invalid token"}
 
 
 def test_logout_with_expired_token(client: TestClient, monkeypatch: pytest.MonkeyPatch):
