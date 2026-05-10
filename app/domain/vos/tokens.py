@@ -1,10 +1,11 @@
-from abc import ABC
-from dataclasses import dataclass
-from uuid import uuid4
-import datetime
 import jwt
+import datetime
+from abc import ABC
+from uuid import uuid4
+from dataclasses import dataclass
 
 from app.utils import settings
+from app.constants import ACCESS_TOKEN_DURATION, REFRESH_TOKEN_DURATION
 
 
 @dataclass
@@ -54,10 +55,16 @@ class Token(ABC):
 
 
 class AccessToken(Token):
-    def __init__(self, payload: CreateTokenPayload):
+    def __init__(self, sub: str):
+        payload = CreateTokenPayload(
+            sub=sub, duration=datetime.timedelta(seconds=ACCESS_TOKEN_DURATION)
+        )
         super().__init__(payload, token_type="access")
 
 
 class RefreshToken(Token):
-    def __init__(self, payload: CreateTokenPayload):
+    def __init__(self, sub: str):
+        payload = CreateTokenPayload(
+            sub=sub, duration=datetime.timedelta(seconds=REFRESH_TOKEN_DURATION)
+        )
         super().__init__(payload, token_type="refresh")

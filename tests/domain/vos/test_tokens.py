@@ -93,22 +93,12 @@ def test_token_invalid_signature():
 
 
 def test_access_token():
-    access_token = AccessToken(
-        payload=CreateTokenPayload(
-            sub="user_id_123",
-            duration=datetime.timedelta(minutes=15),
-        ),
-    )
+    access_token = AccessToken(sub="user_id_123")
 
     assert access_token.payload.type == "access"
 
 
 def test_refresh_token():
-    refresh_token = RefreshToken(
-        payload=CreateTokenPayload(
-            sub="user_id_123",
-            duration=datetime.timedelta(days=7),
-        ),
-    )
+    refresh_token = RefreshToken(sub="user_id_123")
 
     assert refresh_token.payload.type == "refresh"

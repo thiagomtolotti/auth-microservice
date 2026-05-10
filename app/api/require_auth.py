@@ -20,8 +20,8 @@ def _get_auth_token(auth_header: str | None) -> str | None:
 
 
 class InvalidTokenException(HTTPException):
-    def __init__(self):
-        super().__init__(status_code=401, detail="Invalid token")
+    def __init__(self, detail: str = "Invalid token"):
+        super().__init__(status_code=401, detail=detail)
 
 
 def require_auth(authorization: Annotated[str | None, Header()] = None) -> TokenPayload:

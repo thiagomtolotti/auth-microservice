@@ -1,0 +1,2 @@
+ACCESS_TOKEN_DURATION = 15 * 60  # 15 minutes
+REFRESH_TOKEN_DURATION = 7 * 24 * 60 * 60  # 7 days

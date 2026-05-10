@@ -1,11 +1,9 @@
-import datetime
 from uuid import UUID
 
 from app.domain.vos.password import Password
 
 from app.domain.vos.tokens import (
     AccessToken,
-    CreateTokenPayload,
     RefreshToken,
     Token,
     TokenPayload,
@@ -51,14 +49,8 @@ class UsersService:
         if not user.password.verify(data.password):
             raise LoginFailedException("Invalid email or password")
 
-        access_token = AccessToken(
-            CreateTokenPayload(
-                sub=str(user.id), duration=datetime.timedelta(minutes=15)
-            )
-        )
-        refresh_token = RefreshToken(
-            CreateTokenPayload(sub=str(user.id), duration=datetime.timedelta(days=7))
-        )
+        access_token = AccessToken(str(user.id))
+        refresh_token = RefreshToken(str(user.id))
 
         self.repository.save_refresh_token(
             user.id,
@@ -95,11 +87,7 @@ class UsersService:
         if not is_valid:
             raise LoginFailedException("Invalid refresh token")
 
-        new_access_token = AccessToken(
-            CreateTokenPayload(
-                sub=str(user.id), duration=datetime.timedelta(minutes=15)
-            )
-        )
+        new_access_token = AccessToken(sub=str(user.id))
 
         return str(new_access_token)
 
