@@ -3,7 +3,7 @@
 args =
 
 dev:
-	sudo docker compose up --build dev --remove-orphans
+	docker compose up --build dev --remove-orphans
 
 generate-certs:
 	mkdir -p certs
@@ -12,10 +12,10 @@ generate-certs:
 	chmod 600 certs/private_key.pem
 
 tests: 
-	sudo docker-compose run --build --rm tests ${path}
+	docker-compose run --build --rm tests ${path}
 
 tests-watch:
-	sudo docker-compose run --build --rm tests-watch pytest-watch ${path}
+	docker-compose run --build --rm tests-watch pytest-watch ${path}
 
 coverage:
-	sudo docker-compose run --build --rm coverage
+	docker-compose run --build --rm coverage
