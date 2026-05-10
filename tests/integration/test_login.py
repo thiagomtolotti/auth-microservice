@@ -1,13 +1,10 @@
 from starlette.testclient import TestClient
 
-from app.main import app
-
 from .constants import TEST_EMAIL, TEST_PASSWORD
 from .flows import create_user, login
 
 
-def test_login():
-    client = TestClient(app)
+def test_login(client: TestClient):
 
     create_user(client, TEST_EMAIL, TEST_PASSWORD)
 
@@ -19,3 +16,14 @@ def test_login():
 
     assert "access_token" in json_response
     assert "refresh_token" in json_response
+
+
+def test_no_user_login(client: TestClient):
+    response = login(client, TEST_EMAIL, TEST_PASSWORD)
+
+    assert response.status_code == 400
+
+    json_response = response.json()
+
+    assert json_response["type"] == "LoginFailedException"
+    assert json_response["detail"] == "Invalid email or password"

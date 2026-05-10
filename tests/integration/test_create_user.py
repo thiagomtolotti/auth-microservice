@@ -1,14 +1,12 @@
 from fastapi.testclient import TestClient
 
-from app.main import app
 from app.domain.exceptions import UserAlreadyExistsException
 
 from .flows import create_user
 from .constants import TEST_EMAIL, TEST_PASSWORD
 
 
-def test_create_user():
-    client = TestClient(app)
+def test_create_user(client: TestClient):
 
     response = create_user(client, TEST_EMAIL, TEST_PASSWORD)
 
@@ -16,9 +14,7 @@ def test_create_user():
     assert response.json() == {"message": "User created successfully"}
 
 
-def test_create_duplicate_user():
-    client = TestClient(app)
-
+def test_create_duplicate_user(client: TestClient):
     # Create the user for the first time
     create_user(client, TEST_EMAIL, TEST_PASSWORD)
 
@@ -33,9 +29,7 @@ def test_create_duplicate_user():
     assert json_response["detail"] == "User already exists"
 
 
-def test_create_user_invalid_email():
-    client = TestClient(app)
-
+def test_create_user_invalid_email(client: TestClient):
     invalid_email = "invalid-email"
 
     response = create_user(client, invalid_email, TEST_PASSWORD)
@@ -47,9 +41,7 @@ def test_create_user_invalid_email():
     assert json_response["type"] == "ValidationError"
 
 
-def test_create_user_short_password():
-    client = TestClient(app)
-
+def test_create_user_short_password(client: TestClient):
     invalid_password = "short"
 
     response = create_user(client, TEST_EMAIL, invalid_password)
@@ -61,9 +53,7 @@ def test_create_user_short_password():
     assert json_response["type"] == "ValidationError"
 
 
-def test_create_user_missing_fields():
-    client = TestClient(app)
-
+def test_create_user_missing_fields(client: TestClient):
     response = client.post("/users/", json={})
 
     assert response.status_code == 422
