@@ -1,5 +1,8 @@
+import datetime
+import random
 from uuid import UUID
 
+from app.constants import FORGOT_PASSWORD_TOKEN_DURATION
 from app.domain.vos.password import Password
 
 from app.domain.vos.tokens import (
@@ -123,3 +126,27 @@ class UsersService:
             raise UserNotFoundException("User not found")
 
         return user
+
+    def forgot_password(self, email: str):
+        user = self.repository.find_by_email(email)
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        token = ForgotPasswordToken()
+
+        self.repository.create_forgot_password_token(
+            user.id, str(token), expires_at=token.expires_at
+        )
+
+        print(f"Forgot password token for user {email}: {token.token}")
+
+
+class ForgotPasswordToken:
+    def __init__(self):
+        self.token = random.randint(1000, 9999)
+
+        now = datetime.datetime.now(datetime.timezone.utc)
+        expires_delta = datetime.timedelta(seconds=FORGOT_PASSWORD_TOKEN_DURATION)
+
+        self.expires_at = int((now + expires_delta).timestamp())

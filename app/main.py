@@ -23,6 +23,10 @@ def setup_exception_handlers(app: FastAPI):
     async def validation_exception_handler(  # type: ignore
         _: Request, exc: RequestValidationError
     ):
+        print(
+            f"Validation error: {exc.errors()}"
+        )  # Log the validation errors for debugging
+
         error = exc.errors()[0]
 
         return JSONResponse(

@@ -10,6 +10,7 @@ from app.utils.types import (
     LoginHandlerDTO,
     LoginHandlerResponseDTO,
     ChangePasswordHandlerDTO,
+    ForgotPasswordHandlerDTO,
 )
 from .require_auth import require_auth
 
@@ -34,6 +35,9 @@ class UsersRouter:
             "/change_password", self.change_password, methods=["POST"]
         )
         self.router.add_api_route("/", self.delete_user, methods=["DELETE"])
+        self.router.add_api_route(
+            "/forgot_password", self.forgot_password, methods=["POST"]
+        )
 
     def create_user(
         self,
@@ -90,3 +94,13 @@ class UsersRouter:
         service.delete_user(access_token)
 
         return {"message": "User deleted successfully"}
+
+    def forgot_password(
+        self,
+        data: ForgotPasswordHandlerDTO,
+        service: UsersService = Depends(get_users_service),
+    ):
+
+        service.forgot_password(data.email)
+
+        return {"message": "Password reset token created successfully!"}

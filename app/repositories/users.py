@@ -25,6 +25,13 @@ class User:
     id: UUID
 
 
+@dataclass
+class ForgotPasswordData:
+    user_id: UUID
+    token: str
+    expires_at: int
+
+
 class UsersRepository(ABC):
     @abstractmethod
     def create(self, data: CreateUserRepositoryDTO):
@@ -65,11 +72,17 @@ class UsersRepository(ABC):
         """Deletes a user by their ID. Returns True if the user was deleted successfully, False otherwise."""
         pass
 
+    @abstractmethod
+    def create_forgot_password_token(self, user_id: UUID, token: str, expires_at: int):
+        """Creates a forgot password token for a given user."""
+        pass
+
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
         self.users: list[User] = []
         self.refresh_tokens: list[RefreshTokenData] = []
+        self.forgot_password_tokens: list[ForgotPasswordData] = []
 
     def create(self, data: CreateUserRepositoryDTO):
         user = User(
@@ -148,3 +161,15 @@ class InMemoryUsersRepository(UsersRepository):
         after_count = len(self.users)
 
         return prev_count > after_count
+
+    def create_forgot_password_token(self, user_id: UUID, token: str, expires_at: int):
+        self.forgot_password_tokens.append(
+            ForgotPasswordData(
+                user_id=user_id,
+                token=token,
+                expires_at=expires_at,
+            )
+        )
+
+        print(f"Forgot password token created for user_id: {user_id}")
+        print(f"Current forgot password tokens: {len(self.forgot_password_tokens)}")
