@@ -3,7 +3,7 @@ from starlette.testclient import TestClient
 
 from tests.integration.constants import TEST_EMAIL, TEST_PASSWORD
 from tests.integration.fixtures import MockNotificationHandler
-from .flows import create_user, forgot_password, reset_password
+from .flows import create_user, forgot_password, reset_password, login
 
 
 def test_reset_password(
@@ -15,9 +15,15 @@ def test_reset_password(
 
     token = notification_handler.forgot_password_calls[0].token
 
-    reset_password_res = reset_password(client, TEST_EMAIL, token, "@newpassword123")
+    NEW_PASSWORD = "@newpassword123"
+
+    reset_password_res = reset_password(client, TEST_EMAIL, token, NEW_PASSWORD)
 
     assert reset_password_res.status_code == 200
+
+    login_res = login(client, TEST_EMAIL, NEW_PASSWORD)
+
+    assert login_res.status_code == 200
 
 
 def test_reset_password_with_invalid_token(client: TestClient):
