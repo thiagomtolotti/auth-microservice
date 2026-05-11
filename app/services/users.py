@@ -159,6 +159,11 @@ class UsersService:
         if not forgot_token:
             raise InvalidPasswordException("Invalid or expired token")
 
+        now = int(datetime.datetime.now(datetime.timezone.utc).timestamp())
+        if forgot_token.expires_at < now:
+            self.repository.delete_forgot_password_token(token)
+            raise InvalidPasswordException("Invalid or expired token")
+
         new_pass = Password(new_password)
         if user.password.verify(new_password):
             raise InvalidPasswordException(
