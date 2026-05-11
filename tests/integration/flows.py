@@ -10,6 +10,7 @@ def login(client: TestClient, email: str, password: str) -> Response:
     return client.post("/users/login", json={"email": email, "password": password})
 
 
+# TODO: add default email and password values to avoid having to pass them in every test that needs to register and login a user
 def register_and_login(client: TestClient, email: str, password: str) -> Response:
     create_user(client, email, password)
 
@@ -46,4 +47,20 @@ def delete_user(client: TestClient, token: str) -> Response:
     return client.delete(
         "/users/",
         headers={"Authorization": f"Bearer {token}"},
+    )
+
+
+def forgot_password(client: TestClient, email: str) -> Response:
+    return client.post(
+        "/users/forgot_password",
+        json={"email": email},
+    )
+
+
+def reset_password(
+    client: TestClient, email: str, token: str, new_password: str
+) -> Response:
+    return client.post(
+        "/users/reset_password",
+        json={"email": email, "token": token, "new_password": new_password},
     )

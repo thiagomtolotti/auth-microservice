@@ -41,8 +41,7 @@ class ChangePasswordHandlerDTO:
     new_password: str
 
 
-@dataclass
-class ForgotPasswordHandlerDTO:
+class ForgotPasswordHandlerDTO(BaseModel):
     email: EmailStr
 
 
@@ -50,3 +49,9 @@ class AuthNotificationHandler(ABC):
     @abstractmethod
     def on_forgot_password(self, email: str, token: str, expires_at: int):
         pass
+
+
+class ResetPasswordHandlerDTO(BaseModel):
+    email: EmailStr
+    token: str
+    new_password: str = Field(min_length=8)

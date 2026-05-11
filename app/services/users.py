@@ -149,6 +149,25 @@ class UsersService:
             email, str(token), token.expires_at
         )
 
+    def reset_password(self, email: str, token: str, new_password: str):
+        user = self.repository.find_by_email(email)
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        forgot_token = self.repository.find_forgot_password_token(user.id, token)
+        if not forgot_token:
+            raise InvalidPasswordException("Invalid or expired token")
+
+        new_pass = Password(new_password)
+        if user.password.verify(new_password):
+            raise InvalidPasswordException(
+                "New password cannot be the same as the old password"
+            )
+
+        self.repository.update_password(user.id, new_pass)
+        self.repository.delete_forgot_password_token(token)
+
 
 class ForgotPasswordToken:
     def __init__(self):

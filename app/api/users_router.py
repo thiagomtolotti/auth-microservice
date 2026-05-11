@@ -11,6 +11,7 @@ from app.utils.types import (
     LoginHandlerResponseDTO,
     ChangePasswordHandlerDTO,
     ForgotPasswordHandlerDTO,
+    ResetPasswordHandlerDTO,
 )
 from .require_auth import require_auth
 
@@ -37,6 +38,9 @@ class UsersRouter:
         self.router.add_api_route("/", self.delete_user, methods=["DELETE"])
         self.router.add_api_route(
             "/forgot_password", self.forgot_password, methods=["POST"]
+        )
+        self.router.add_api_route(
+            "/reset_password", self.reset_password, methods=["POST"]
         )
 
     def create_user(
@@ -109,3 +113,12 @@ class UsersRouter:
             return {
                 "message": "If an account with that email exists, a forgot password token has been sent"
             }
+
+    def reset_password(
+        self,
+        data: ResetPasswordHandlerDTO,
+        service: UsersService = Depends(get_users_service),
+    ):
+        service.reset_password(data.email, data.token, data.new_password)
+
+        return {"message": "Password reset successfully"}

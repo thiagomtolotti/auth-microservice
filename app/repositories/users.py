@@ -77,6 +77,18 @@ class UsersRepository(ABC):
         """Creates a forgot password token for a given user."""
         pass
 
+    @abstractmethod
+    def find_forgot_password_token(
+        self, user_id: UUID, token: str
+    ) -> ForgotPasswordData | None:
+        """Finds a forgot password token. Returns the token data if found, None otherwise."""
+        pass
+
+    @abstractmethod
+    def delete_forgot_password_token(self, token: str) -> bool:
+        """Deletes a forgot password token. Returns True if the token was deleted successfully, False otherwise."""
+        pass
+
 
 class InMemoryUsersRepository(UsersRepository):
     def __init__(self):
@@ -173,3 +185,23 @@ class InMemoryUsersRepository(UsersRepository):
 
         print(f"Forgot password token created for user_id: {user_id}")
         print(f"Current forgot password tokens: {len(self.forgot_password_tokens)}")
+
+    def find_forgot_password_token(
+        self, user_id: UUID, token: str
+    ) -> ForgotPasswordData | None:
+        for t in self.forgot_password_tokens:
+            if t.token == token and t.user_id == user_id:
+                return t
+
+        return None
+
+    def delete_forgot_password_token(self, token: str) -> bool:
+        prev_count = len(self.forgot_password_tokens)
+
+        self.forgot_password_tokens = [
+            t for t in self.forgot_password_tokens if t.token != token
+        ]
+
+        after_count = len(self.forgot_password_tokens)
+
+        return prev_count > after_count
