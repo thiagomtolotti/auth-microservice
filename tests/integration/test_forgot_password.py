@@ -28,3 +28,12 @@ def test_forgot_password_non_existent_email(client: TestClient):
 
     assert len(repo.forgot_password_tokens) == 0
     assert forgot_password_res.status_code == 200
+
+
+def test_forgot_password_invalid_email(client: TestClient):
+    forgot_password_res = client.post(
+        "/users/forgot_password",
+        json={"email": "invalid-email"},
+    )
+
+    assert forgot_password_res.status_code == 422
