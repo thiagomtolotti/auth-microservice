@@ -100,7 +100,12 @@ class UsersRouter:
         data: ForgotPasswordHandlerDTO,
         service: UsersService = Depends(get_users_service),
     ):
+        try:
+            service.forgot_password(data.email)
 
-        service.forgot_password(data.email)
-
-        return {"message": "Password reset token created successfully!"}
+        except Exception as e:
+            print(f"Error occurred while processing forgot password request: {e}")
+        finally:
+            return {
+                "message": "If an account with that email exists, a forgot password token has been sent"
+            }

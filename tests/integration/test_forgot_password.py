@@ -14,3 +14,17 @@ def test_forgot_password(client: TestClient):
     )
 
     assert forgot_password_res.status_code == 200
+
+
+def test_forgot_password_non_existent_email(client: TestClient):
+    from app.dependencies import get_users_repo
+
+    forgot_password_res = client.post(
+        "/users/forgot_password",
+        json={"email": "nonexistent@example.com"},
+    )
+
+    repo = get_users_repo()
+
+    assert len(repo.forgot_password_tokens) == 0
+    assert forgot_password_res.status_code == 200
