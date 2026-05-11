@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
 from pydantic import BaseModel
@@ -43,3 +44,9 @@ class ChangePasswordHandlerDTO:
 @dataclass
 class ForgotPasswordHandlerDTO:
     email: EmailStr
+
+
+class AuthNotificationHandler(ABC):
+    @abstractmethod
+    def on_forgot_password(self, email: str, token: str, expires_at: int):
+        pass

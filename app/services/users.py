@@ -13,6 +13,7 @@ from app.utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginServiceResponseDTO,
+    AuthNotificationHandler,
 )
 from app.domain.exceptions import (
     InvalidPasswordException,
@@ -26,8 +27,13 @@ from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
 
 
 class UsersService:
-    def __init__(self, repository: UsersRepository):
+    def __init__(
+        self,
+        repository: UsersRepository,
+        notification_handler: AuthNotificationHandler,
+    ):
         self.repository = repository
+        self.notification_handler = notification_handler
 
     def create(self, data: CreateUserHandlerDTO):
         exists = bool(self.repository.find_by_email(data.email))
@@ -139,7 +145,9 @@ class UsersService:
             user.id, str(token), expires_at=token.expires_at
         )
 
-        print(f"Forgot password token for user {email}: {token.token}")
+        self.notification_handler.on_forgot_password(
+            email, str(token), token.expires_at
+        )
 
 
 class ForgotPasswordToken:
@@ -150,3 +158,6 @@ class ForgotPasswordToken:
         expires_delta = datetime.timedelta(seconds=FORGOT_PASSWORD_TOKEN_DURATION)
 
         self.expires_at = int((now + expires_delta).timestamp())
+
+    def __str__(self):
+        return str(self.token)

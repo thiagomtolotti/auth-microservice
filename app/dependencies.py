@@ -1,15 +1,26 @@
 from fastapi import Depends
 
 from app.repositories.users import InMemoryUsersRepository
+from app.services import NotificationLogger
 from app.services.users import UsersService
+from app.utils.types import AuthNotificationHandler
 
+
+notification_logger = NotificationLogger()
 users_repo = InMemoryUsersRepository()
-users_service = UsersService(users_repo)
+users_service = UsersService(users_repo, notification_logger)
 
 
 def get_users_repo():
     return users_repo
 
 
-def get_users_service(repo: InMemoryUsersRepository = Depends(get_users_repo)):
-    return UsersService(repo)
+def get_notification_handler() -> AuthNotificationHandler:
+    return NotificationLogger()
+
+
+def get_users_service(
+    repo: InMemoryUsersRepository = Depends(get_users_repo),
+    notification_handler: NotificationLogger = Depends(get_notification_handler),
+):
+    return UsersService(repo, notification_handler)
