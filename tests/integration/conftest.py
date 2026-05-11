@@ -1,5 +1,7 @@
 import pytest
 
+from tests.integration.fixtures import MockNotificationHandler
+
 
 @pytest.fixture()
 def client():
@@ -15,3 +17,14 @@ def client():
     yield TestClient(app)
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def notification_handler():
+    from app.main import app
+    from app.dependencies import get_notification_handler
+
+    notification_handler = MockNotificationHandler()
+    app.dependency_overrides[get_notification_handler] = lambda: notification_handler
+
+    yield notification_handler
