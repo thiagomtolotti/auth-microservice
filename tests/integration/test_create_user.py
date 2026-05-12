@@ -1,13 +1,13 @@
 from fastapi.testclient import TestClient
 
+from app.api.main import Routes
 from app.domain.exceptions import UserAlreadyExistsException
 
-from .flows import create_user
+from .flows import create_user, get_route
 from .constants import TEST_EMAIL, TEST_PASSWORD
 
 
 def test_create_user(client: TestClient):
-
     response = create_user(client, TEST_EMAIL, TEST_PASSWORD)
 
     assert response.status_code == 200
@@ -54,7 +54,7 @@ def test_create_user_short_password(client: TestClient):
 
 
 def test_create_user_missing_fields(client: TestClient):
-    response = client.post("/users/", json={})
+    response = client.post(get_route(Routes.REGISTER), json={})
 
     assert response.status_code == 422
 

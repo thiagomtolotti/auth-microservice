@@ -1,19 +1,21 @@
 from fastapi.testclient import TestClient
 import pytest
 
+from app.routes import Routes
+
 from .constants import TEST_EMAIL, TEST_PASSWORD
 
-from .flows import register_and_login, delete_user, access_protected
+from .flows import get_route, register_and_login, delete_user, access_protected
 
 
 def test_ping(client: TestClient):
-    response = client.get("/")
+    response = client.get(get_route(Routes.PING))
 
     assert response.status_code == 200
 
 
 def test_protected(client: TestClient):
-    response = client.get("/protected")
+    response = client.get(get_route(Routes.PROTECTED))
 
     assert response.status_code == 401
 
@@ -54,7 +56,8 @@ def test_protected_refresh_token(client: TestClient):
     refresh_token = json["refresh_token"]
 
     response = client.get(
-        "/protected", headers={"Authorization": f"Bearer {refresh_token}"}
+        get_route(Routes.PROTECTED),
+        headers={"Authorization": f"Bearer {refresh_token}"},
     )
 
     assert response.status_code == 401

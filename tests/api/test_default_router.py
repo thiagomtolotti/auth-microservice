@@ -4,7 +4,8 @@ from fastapi.applications import FastAPI
 from fastapi.testclient import TestClient
 import pytest
 
-from app.api.default_router import DefaultRouter
+from app.api import DefaultRouter
+from app.routes import Routes
 
 
 @pytest.fixture
@@ -24,14 +25,14 @@ def mock_token_decode():
 
 
 def test_ping(client: TestClient):
-    response = client.get("/")
+    response = client.get(Routes.PING.value)
 
     assert response.status_code == 200
     assert response.json() == {"message": "Service is alive"}
 
 
 def test_protected_route_without_token(client: TestClient):
-    response = client.get("/protected")
+    response = client.get(Routes.PROTECTED.value)
 
     assert response.status_code == 401
     assert response.json() == {"message": "Authorization header missing"}
@@ -43,7 +44,7 @@ def test_protected_route_with_invalid_token(
     mock_token_decode.side_effect = Exception("Invalid token")
 
     response = client.get(
-        "/protected", headers={"Authorization": "Bearer invalidtoken"}
+        Routes.PROTECTED.value, headers={"Authorization": "Bearer invalidtoken"}
     )
 
     assert response.status_code == 401
@@ -55,7 +56,9 @@ def test_protected_route_with_valid_token(
 ):
     mock_token_decode.return_value = {"user_id": "123"}
 
-    response = client.get("/protected", headers={"Authorization": "Bearer validtoken"})
+    response = client.get(
+        Routes.PROTECTED.value, headers={"Authorization": "Bearer validtoken"}
+    )
 
     assert response.status_code == 200
     assert response.json() == {"message": "This is a protected route"}

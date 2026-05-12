@@ -4,6 +4,7 @@ from fastapi.routing import APIRouter
 from pydantic.main import BaseModel
 from app.dependencies import get_users_service
 from app.domain.vos.tokens import AccessToken
+from app.routes import Routes
 from app.services.users import UsersService
 from app.utils.types import (
     CreateUserHandlerDTO,
@@ -24,24 +25,50 @@ class RefreshTokenHandlerResponseDTO(BaseModel):
     access_token: str
 
 
-class UsersRouter:
+class DefaultRouter:
     def __init__(self):
-        self.router = APIRouter(prefix="/users")
+        self.router = APIRouter(prefix="/auth")
 
-        self.router.add_api_route("/", self.create_user, methods=["POST"])
-        self.router.add_api_route("/login", self.login, methods=["POST"])
-        self.router.add_api_route("/logout", self.logout, methods=["POST"])
-        self.router.add_api_route("/refresh", self.refresh_token, methods=["POST"])
+        # fmt: off
         self.router.add_api_route(
-            "/change_password", self.change_password, methods=["POST"]
+            Routes.PING.value, self.ping, methods=["GET"]
         )
-        self.router.add_api_route("/", self.delete_user, methods=["DELETE"])
+        # fmt: off
         self.router.add_api_route(
-            "/forgot_password", self.forgot_password, methods=["POST"]
+            Routes.PROTECTED.value, self.protected_route, methods=["GET"]
         )
         self.router.add_api_route(
-            "/reset_password", self.reset_password, methods=["POST"]
+            Routes.REGISTER.value, self.create_user, methods=["POST"]
         )
+        # fmt: off
+        self.router.add_api_route(
+            Routes.LOGIN.value, self.login, methods=["POST"]
+        )
+        # fmt: off
+        self.router.add_api_route(
+            Routes.LOGOUT.value, self.logout, methods=["POST"]
+        )
+        self.router.add_api_route(
+            Routes.REFRESH_TOKEN.value, self.refresh_token, methods=["POST"]
+        )
+        self.router.add_api_route(
+            Routes.CHANGE_PASSWORD.value, self.change_password, methods=["POST"]
+        )
+        self.router.add_api_route(
+            Routes.DELETE_USER.value, self.delete_user, methods=["DELETE"]
+        )
+        self.router.add_api_route(
+            Routes.FORGOT_PASSWORD.value, self.forgot_password, methods=["POST"]
+        )
+        self.router.add_api_route(
+            Routes.RESET_PASSWORD.value, self.reset_password, methods=["POST"]
+        )
+
+    def ping(self):
+        return {"message": "Service is alive"}
+
+    def protected_route(self, _=Depends(require_auth)):
+        return {"message": "This is a protected route"}
 
     def create_user(
         self,

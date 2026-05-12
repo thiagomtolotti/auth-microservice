@@ -1,11 +1,11 @@
 from starlette.testclient import TestClient
 
+
 from .constants import TEST_EMAIL, TEST_PASSWORD
 from .flows import create_user, login
 
 
 def test_login(client: TestClient):
-
     create_user(client, TEST_EMAIL, TEST_PASSWORD)
 
     response = login(client, TEST_EMAIL, TEST_PASSWORD)

@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.responses import JSONResponse
 
-from app.api import DefaultRouter, UsersRouter
+from app.api import DefaultRouter
 from app.domain.exceptions import DomainException
 
 
@@ -44,7 +44,6 @@ def initialize():
     app = FastAPI()
 
     app.include_router(DefaultRouter().router)
-    app.include_router(UsersRouter().router)
 
     setup_exception_handlers(app)
 
