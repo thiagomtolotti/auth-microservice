@@ -5,9 +5,9 @@ RUN apt-get update && apt-get install -y build-essential python3-dev
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY pyproject.toml .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir ".[dev]"
 
 # Stage 2: Testing
 FROM base AS testing-watch
