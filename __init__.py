@@ -1,0 +1,1 @@
+from .app.api import DefaultRouter # type: ignore
