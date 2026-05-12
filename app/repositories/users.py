@@ -6,8 +6,8 @@ from uuid import UUID, uuid4
 
 from pydantic.networks import EmailStr
 
-from app.domain.vos.password import Password
-from app.utils.types import CreateUserRepositoryDTO
+from ..domain.vos.password import Password
+from ..utils.types import CreateUserRepositoryDTO
 
 
 @dataclass

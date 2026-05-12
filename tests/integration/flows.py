@@ -1,7 +1,7 @@
 from starlette.testclient import TestClient
 from httpx import Response
 
-from app.routes import Routes
+from .routes import Routes
 from tests.integration.constants import TEST_EMAIL, TEST_PASSWORD
 
 

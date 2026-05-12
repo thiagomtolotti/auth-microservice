@@ -1,7 +1,7 @@
 from argon2 import PasswordHasher
 import re
 
-from app.domain.exceptions import InvalidPasswordException
+from ..exceptions import InvalidPasswordException
 
 
 PASSWORD_REGEX = r'^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*()_+[\]{};\':"\\|,.<>/?]).+$'

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from app.api.main import Routes
-from app.domain.exceptions import UserAlreadyExistsException
+from .api.main import Routes
+from .domain.exceptions import UserAlreadyExistsException
 
 from .flows import create_user, get_route
 from .constants import TEST_EMAIL, TEST_PASSWORD

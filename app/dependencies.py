@@ -1,9 +1,9 @@
 from fastapi import Depends
 
-from app.repositories.users import InMemoryUsersRepository
-from app.services import NotificationLogger
-from app.services.users import UsersService
-from app.utils.types import AuthNotificationHandler
+from .repositories.users import InMemoryUsersRepository
+from .services import NotificationLogger
+from .services.users import UsersService
+from .utils.types import AuthNotificationHandler
 
 
 notification_logger = NotificationLogger()

@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from pydantic.fields import Field
 from pydantic.networks import EmailStr
 
-from app.domain.vos.password import Password
+from ..domain.vos.password import Password
 
 
 class CreateUserHandlerDTO(BaseModel):

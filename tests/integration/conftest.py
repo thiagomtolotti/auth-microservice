@@ -7,9 +7,9 @@ from tests.integration.fixtures import MockNotificationHandler
 def client():
     from starlette.testclient import TestClient
 
-    from app.main import app
-    from app.dependencies import get_users_repo
-    from app.repositories.users import InMemoryUsersRepository
+    from .main import app
+    from .dependencies import get_users_repo
+    from .repositories.users import InMemoryUsersRepository
 
     fresh_repo = InMemoryUsersRepository()
     app.dependency_overrides[get_users_repo] = lambda: fresh_repo
@@ -21,8 +21,8 @@ def client():
 
 @pytest.fixture()
 def notification_handler():
-    from app.main import app
-    from app.dependencies import get_notification_handler
+    from .main import app
+    from .dependencies import get_notification_handler
 
     notification_handler = MockNotificationHandler()
     app.dependency_overrides[get_notification_handler] = lambda: notification_handler

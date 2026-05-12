@@ -22,7 +22,7 @@ def test_forgot_password(
 def test_forgot_password_non_existent_email(
     client: TestClient, notification_handler: MockNotificationHandler
 ):
-    from app.dependencies import get_users_repo
+    from .dependencies import get_users_repo
 
     forgot_password_res = forgot_password(client, "nonexistent@example.com")
 

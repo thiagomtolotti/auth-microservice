@@ -2,11 +2,11 @@ from fastapi import Depends
 from fastapi.routing import APIRouter
 
 from pydantic.main import BaseModel
-from app.dependencies import get_users_service
-from app.domain.vos.tokens import AccessToken
-from app.routes import Routes
-from app.services.users import UsersService
-from app.utils.types import (
+from ..dependencies import get_users_service
+from ..domain.vos.tokens import AccessToken
+from ..routes import Routes
+from ..services.users import UsersService
+from ..utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginHandlerResponseDTO,

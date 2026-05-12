@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 import pytest
 
-from app.routes import Routes
+from .routes import Routes
 
 from .constants import TEST_EMAIL, TEST_PASSWORD
 

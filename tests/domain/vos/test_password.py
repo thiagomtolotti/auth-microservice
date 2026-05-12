@@ -1,6 +1,6 @@
 import pytest
 
-from app.domain.vos.password import Password
+from .domain.vos.password import Password
 
 
 def test_valid_password():

@@ -1,6 +1,6 @@
 import datetime
 
-from app.utils.types import AuthNotificationHandler
+from ..utils.types import AuthNotificationHandler
 
 
 class NotificationLogger(AuthNotificationHandler):

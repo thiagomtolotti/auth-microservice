@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.responses import JSONResponse
 
-from app.api import DefaultRouter
-from app.domain.exceptions import DomainException
+from .api import DefaultRouter
+from .domain.exceptions import DomainException
 
 
 def setup_exception_handlers(app: FastAPI):

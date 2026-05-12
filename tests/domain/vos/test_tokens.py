@@ -3,7 +3,7 @@ from uuid import UUID
 
 import jwt
 
-from app.domain.vos.tokens import AccessToken, CreateTokenPayload, RefreshToken, Token
+from .domain.vos.tokens import AccessToken, CreateTokenPayload, RefreshToken, Token
 
 
 def test_create_success():

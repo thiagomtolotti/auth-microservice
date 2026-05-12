@@ -2,20 +2,20 @@ import datetime
 import random
 from uuid import UUID
 
-from app.constants import FORGOT_PASSWORD_TOKEN_DURATION
-from app.domain.vos.password import Password
+from ..constants import FORGOT_PASSWORD_TOKEN_DURATION
+from ..domain.vos.password import Password
 
-from app.domain.vos.tokens import (
+from ..domain.vos.tokens import (
     AccessToken,
     RefreshToken,
 )
-from app.utils.types import (
+from ..utils.types import (
     CreateUserHandlerDTO,
     LoginHandlerDTO,
     LoginServiceResponseDTO,
-    AuthNotificationHandler,
+    AuthNotificationHandler,CreateUserRepositoryDTO
 )
-from app.domain.exceptions import (
+from ..domain.exceptions import (
     InvalidPasswordException,
     LoginFailedException,
     LogoutFailedException,
@@ -23,7 +23,7 @@ from app.domain.exceptions import (
     UserNotFoundException,
 )
 
-from app.repositories.users import CreateUserRepositoryDTO, UsersRepository
+from ..repositories.users import  UsersRepository
 
 
 class UsersService:

@@ -4,9 +4,10 @@ from abc import ABC
 from uuid import UUID, uuid4
 from dataclasses import dataclass
 
-from app.domain.exceptions import InvalidTokenException
-from app.utils import settings
-from app.constants import ACCESS_TOKEN_DURATION, REFRESH_TOKEN_DURATION
+from ...utils import settings
+from ...constants import ACCESS_TOKEN_DURATION, REFRESH_TOKEN_DURATION
+
+from ..exceptions import InvalidTokenException
 
 
 @dataclass

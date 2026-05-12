@@ -4,10 +4,10 @@ from uuid import UUID
 from fastapi.params import Header
 from fastapi import Depends
 
-from app.dependencies import get_users_service
-from app.domain.exceptions import InvalidTokenException
-from app.domain.vos.tokens import AccessToken
-from app.services.users import UsersService
+from ..dependencies import get_users_service
+from ..domain.exceptions import InvalidTokenException
+from ..domain.vos.tokens import AccessToken
+from ..services.users import UsersService
 
 
 def _get_auth_token(auth_header: str | None) -> str | None:

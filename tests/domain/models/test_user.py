@@ -1,5 +1,5 @@
-# from app.domain.vos import Password
-# from app.domain.models.user import UserModel
+# from .domain.vos import Password
+# from .domain.models.user import UserModel
 
 # import pytest
 
