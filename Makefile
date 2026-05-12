@@ -1,4 +1,4 @@
-.PHONY: dev generate-certs tests tests-watch 
+.PHONY: dev generate-certs tests tests-watch venv
 
 args =
 
@@ -19,3 +19,7 @@ tests-watch:
 
 coverage:
 	docker-compose run --build --rm coverage
+
+venv:
+	python3 -m venv venv
+	venv/bin/pip install -r requirements.txt
