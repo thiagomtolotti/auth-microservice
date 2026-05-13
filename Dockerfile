@@ -9,31 +9,12 @@ COPY pyproject.toml .
 
 RUN pip install --no-cache-dir ".[dev]"
 
-COPY . .
-
-RUN pip install -e .
-
-# Stage 2: Testing
-FROM base AS testing-watch
-
-RUN pip install pytest-watch 
-
-CMD ["pytest-watch"]
-
-# Stage 2: Testing
-FROM base as testing
-
-ENTRYPOINT ["pytest"]
-CMD ["."]
 
 # Stage 3: Development
 FROM base AS development
 
+COPY . .
+
+RUN pip install -e .
+
 CMD ["fastapi", "dev", "--host", "0.0.0.0"]
-
-# Stage 4: Coverage
-FROM testing AS coverage
-
-RUN pip install pytest pytest-cov
-
-CMD ["--cov=app", "--cov-report=html"]
