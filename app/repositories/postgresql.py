@@ -5,10 +5,12 @@ from app.utils.types import CreateUserRepositoryDTO
 from .users import User
 from .types import ForgotPasswordData, Password, UsersRepository
 
+from psycopg import connect
 
 class PostgreSQLRepository(UsersRepository):
     def __init__(self):
-        pass
+        self.url = "postgresql://user:password@localhost:5432/auth_db"
+        self.connection = connect(self.url)
     
     def create(self, data: CreateUserRepositoryDTO):
         pass
