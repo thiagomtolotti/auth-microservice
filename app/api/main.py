@@ -68,7 +68,7 @@ class DefaultRouter:
         return {"message": "Service is alive"}
 
     def protected_route(self, _=Depends(require_auth)):
-        return {"message": "This is a protected route"}
+        return {"message": "This is a protected route!"}
 
     def create_user(
         self,

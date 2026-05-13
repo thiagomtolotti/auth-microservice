@@ -9,26 +9,25 @@ COPY pyproject.toml .
 
 RUN pip install --no-cache-dir ".[dev]"
 
+COPY . .
+
+RUN pip install -e .
+
 # Stage 2: Testing
 FROM base AS testing-watch
 
 RUN pip install pytest-watch 
 
-COPY . .
-
 CMD ["pytest-watch"]
 
+# Stage 2: Testing
 FROM base as testing
-
-COPY . .
 
 ENTRYPOINT ["pytest"]
 CMD ["."]
 
 # Stage 3: Development
 FROM base AS development
-
-COPY . .
 
 CMD ["fastapi", "dev", "--host", "0.0.0.0"]
 

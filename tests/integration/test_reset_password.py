@@ -1,8 +1,8 @@
 import pytest
 from starlette.testclient import TestClient
 
-from tests.integration.constants import TEST_EMAIL, TEST_PASSWORD
-from tests.integration.fixtures import MockNotificationHandler
+from .constants import TEST_EMAIL, TEST_PASSWORD
+from .fixtures import MockNotificationHandler
 from .flows import create_user, forgot_password, reset_password, login
 
 

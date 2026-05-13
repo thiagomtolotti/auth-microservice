@@ -4,8 +4,8 @@ from fastapi.applications import FastAPI
 from fastapi.testclient import TestClient
 import pytest
 
-from .api import DefaultRouter
-from .routes import Routes
+from app.api import DefaultRouter
+from app.routes import Routes
 
 
 @pytest.fixture

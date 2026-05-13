@@ -1,6 +1,6 @@
 from starlette.testclient import TestClient
 
-from tests.integration.constants import TEST_EMAIL, TEST_PASSWORD
+from .constants import TEST_EMAIL, TEST_PASSWORD
 
 from .flows import register_and_login, change_password, logout, login
 

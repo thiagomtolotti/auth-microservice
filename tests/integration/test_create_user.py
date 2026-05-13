@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from .api.main import Routes
-from .domain.exceptions import UserAlreadyExistsException
+from app.api.main import Routes
+from app.domain.exceptions import UserAlreadyExistsException
 
 from .flows import create_user, get_route
 from .constants import TEST_EMAIL, TEST_PASSWORD
@@ -12,6 +12,7 @@ def test_create_user(client: TestClient):
 
     assert response.status_code == 200
     assert response.json() == {"message": "User created successfully"}
+
 
 
 def test_create_duplicate_user(client: TestClient):

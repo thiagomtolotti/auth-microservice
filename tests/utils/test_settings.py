@@ -1,4 +1,4 @@
-from .utils import settings
+from app.utils import settings
 
 
 def test_settings():

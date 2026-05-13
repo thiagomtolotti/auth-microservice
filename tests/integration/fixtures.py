@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from .utils.types import AuthNotificationHandler
+from app.utils.types import AuthNotificationHandler
 
 
 @dataclass

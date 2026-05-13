@@ -1,7 +1,7 @@
 from starlette.testclient import TestClient
 
-from tests.integration.constants import TEST_EMAIL, TEST_PASSWORD
-from tests.integration.fixtures import MockNotificationHandler
+from .constants import TEST_EMAIL, TEST_PASSWORD
+from .fixtures import MockNotificationHandler
 
 from .flows import create_user, forgot_password
 
@@ -22,7 +22,7 @@ def test_forgot_password(
 def test_forgot_password_non_existent_email(
     client: TestClient, notification_handler: MockNotificationHandler
 ):
-    from .dependencies import get_users_repo
+    from app.dependencies import get_users_repo
 
     forgot_password_res = forgot_password(client, "nonexistent@example.com")
 
