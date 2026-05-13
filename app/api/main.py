@@ -25,42 +25,42 @@ class RefreshTokenHandlerResponseDTO(BaseModel):
     access_token: str
 
 
-class DefaultRouter:
+class DefaultRouter(APIRouter):
     def __init__(self):
-        self.router = APIRouter(prefix="/auth")
+        super().__init__(prefix="/auth")
 
         # fmt: off
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.PING.value, self.ping, methods=["GET"]
         )
         # fmt: off
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.PROTECTED.value, self.protected_route, methods=["GET"]
         )
-        self.router.add_api_route(
+        self    .add_api_route(
             Routes.REGISTER.value, self.create_user, methods=["POST"]
         )
         # fmt: off
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.LOGIN.value, self.login, methods=["POST"]
         )
         # fmt: off
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.LOGOUT.value, self.logout, methods=["POST"]
         )
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.REFRESH_TOKEN.value, self.refresh_token, methods=["POST"]
         )
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.CHANGE_PASSWORD.value, self.change_password, methods=["POST"]
         )
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.DELETE_USER.value, self.delete_user, methods=["DELETE"]
         )
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.FORGOT_PASSWORD.value, self.forgot_password, methods=["POST"]
         )
-        self.router.add_api_route(
+        self.add_api_route(
             Routes.RESET_PASSWORD.value, self.reset_password, methods=["POST"]
         )
 
@@ -149,3 +149,4 @@ class DefaultRouter:
         service.reset_password(data.email, data.token, data.new_password)
 
         return {"message": "Password reset successfully"}
+

@@ -43,7 +43,7 @@ def initialize():
 
     app = FastAPI()
 
-    app.include_router(DefaultRouter().router)
+    app.include_router(DefaultRouter())
 
     setup_exception_handlers(app)
 
