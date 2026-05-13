@@ -2,8 +2,14 @@ from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from starlette.responses import JSONResponse
 
+from app.repositories.users import InMemoryUsersRepository
+from app.services.users import UsersService
+
+
 from .api import DefaultRouter
 from .domain.exceptions import DomainException
+
+from .utils.types import AuthNotificationHandler
 
 
 def setup_exception_handlers(app: FastAPI):
@@ -51,3 +57,8 @@ def initialize():
 
 
 app = initialize()
+
+def setup(connection_str: str, notification_handler: AuthNotificationHandler) -> UsersService:
+    repo = InMemoryUsersRepository()
+    
+    return UsersService(repo, notification_handler)
