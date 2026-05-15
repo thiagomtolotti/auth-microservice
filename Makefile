@@ -12,13 +12,13 @@ generate-certs:
 	chmod 600 certs/private_key.pem
 
 tests:
-	docker compose run --build --rm dev pytest $(path)
+	docker compose run --build --rm dev uv run pytest $(path)
 
 tests-watch:
-	docker compose run --build --rm dev ptw . $(path) --now --clear
+	docker compose run --build --rm dev uv run ptw . $(path) --now --clear
 
 coverage:
-	docker compose run --build --rm dev pytest --cov=app --cov-report=html $(path) 
+	docker compose run --build --rm dev uv run pytest --cov=app --cov-report=html $(path) 
 
 venv:
 	python3 -m venv venv

@@ -58,7 +58,10 @@ def initialize():
 
 app = initialize()
 
-def setup(connection_str: str, notification_handler: AuthNotificationHandler) -> UsersService:
+
+def setup(
+    connection_str: str, notification_handler: AuthNotificationHandler
+) -> UsersService:
     repo = InMemoryUsersRepository()
-    
+
     return UsersService(repo, notification_handler)

@@ -22,8 +22,6 @@ def test_change_password(client: TestClient):
 
     login_res = login(client, TEST_EMAIL, TEST_PASSWORD)
 
-    print(login_res.json())
-
     assert login_res.status_code == 400
 
     login_res = login(client, TEST_EMAIL, new_password)
