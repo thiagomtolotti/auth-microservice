@@ -3,7 +3,7 @@
 path ?= .
 
 dev:
-	docker compose up --build dev --remove-orphans
+	docker compose up dev --remove-orphans
 
 generate-certs:
 	mkdir -p certs
