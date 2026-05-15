@@ -13,7 +13,7 @@ generate-certs:
 
 setup:
 	uv venv
-	uv sync --no-dev
+	uv sync
 	$(MAKE) generate-certs
 	docker compose build --no-cache
 
